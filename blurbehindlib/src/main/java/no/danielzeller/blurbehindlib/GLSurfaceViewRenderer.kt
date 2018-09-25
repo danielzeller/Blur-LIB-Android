@@ -153,7 +153,7 @@ class GLSurfaceViewRenderer(private val context: Context, internal val scale: Fl
         glUniform1i(glGetUniformLocation(blurShader.program, "u_TextureUnit"), 0)
         glUniform1f(glGetUniformLocation(blurShader.program, "scale"), scale)
 
-        glUniform1f(glGetUniformLocation(blurShader.program, "blurRadius"), blurRadius)
+        glUniform1i(glGetUniformLocation(blurShader.program, "blurRadius"), blurRadius.toInt())
 
         spriteMesh.bindData(blurShader)
         spriteMesh.draw()
