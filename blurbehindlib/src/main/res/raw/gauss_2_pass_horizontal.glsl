@@ -1,5 +1,5 @@
 #extension GL_OES_EGL_image_external : require
-precision highp float;
+precision mediump float;
 
 
 varying vec2 v_TextureCoordinates;
@@ -24,7 +24,8 @@ void main() {
     vec2 flippedYUV=v_TextureCoordinates;
     flippedYUV.y=1.0-flippedYUV.y;
 
-   for(int i = 0; i < diameter; i++) {
+    int step = int(float( blurRadius/15)*scale)+1;
+    for(int i = 0; i < diameter; i+=step) {
        vec2 offset = vec2(float(i - blurRadius) * uWidthOffset,  float(i - blurRadius) * uHeightOffset);
        sampleTex = vec3(texture2D(u_TextureUnit, flippedYUV.st+offset));
        float index = float(i);

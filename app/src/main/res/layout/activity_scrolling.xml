@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:id="@+id/root"
     tools:context=".ScrollingActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -45,13 +46,13 @@
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@android:drawable/ic_dialog_email" />
 
-    <no.danielzeller.blurbehindlib.BlurBehindLayoutGL
+    <no.danielzeller.blurbehindlib.BlurBehindLayout
         android:id="@+id/blurBehindView"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="150dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="150dp">
 
-    </no.danielzeller.blurbehindlib.BlurBehindLayoutGL>
+    </no.danielzeller.blurbehindlib.BlurBehindLayout>
 
     <SeekBar
         android:id="@+id/seekBar"

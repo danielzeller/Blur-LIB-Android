@@ -1,27 +1,16 @@
-package no.danielzeller.blurbehindlib
+package no.danielzeller.blurbehindlib.renderers
 
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
-import android.opengl.GLES20.*
 import android.opengl.GLES30
-import android.opengl.GLSurfaceView.Renderer
 import android.opengl.Matrix
+import no.danielzeller.blurbehindlib.*
 import no.opengl.danielzeller.opengltesting.opengl.gameobject.RenderTexture
-import no.opengl.danielzeller.opengltesting.opengl.util.TextureHelper
-import javax.microedition.khronos.egl.EGLConfig
-import javax.microedition.khronos.opengles.GL10
 
-enum class BlurMode(value: Int) {
-    BOX(1),
-    STACK(2),
-    GAUSS_2_PASS(3),
-    GAUSS_1_PASS(4)
-}
-
-class GLSurfaceViewRenderer(private val context: Context, internal val scale: Float) : Renderer {
+class CommonRenderer (private val context: Context, internal val scale: Float){
 
     private val projectionMatrixOrtho = FloatArray(16)
     private lateinit var spriteMesh: SpriteMesh
@@ -43,15 +32,15 @@ class GLSurfaceViewRenderer(private val context: Context, internal val scale: Fl
 
     private var width = 0
     private var height = 0
-    private var renderTexture = RenderTexture()
+    private var renderTextureHorizontal = RenderTexture()
     private var renderTextureVertical = RenderTexture()
+
     var blurRadius = 50f
-    var noiseTextureID = -1;
     var blurMode = BlurMode.GAUSS_2_PASS
 
-    override fun onSurfaceCreated(glUnused: GL10, config: EGLConfig) {
+     fun onSurfaceCreated() {
 
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
 
         spriteMesh = SpriteMesh()
         fullscreenTextureShader.load(context)
@@ -69,16 +58,15 @@ class GLSurfaceViewRenderer(private val context: Context, internal val scale: Fl
 
     }
 
-    override fun onSurfaceChanged(glUnused: GL10, width: Int, height: Int) {
+    fun onSurfaceChanged( width: Int, height: Int) {
         this.width = width
         this.height = height
 
         surfaceTexture.createSurface((width * scale).toInt(), (height * scale).toInt())
-        renderTexture.InitiateFrameBuffer((width * scale).toInt(), (height * scale).toInt())
+        renderTextureHorizontal.InitiateFrameBuffer((width * scale).toInt(), (height * scale).toInt())
         renderTextureVertical.InitiateFrameBuffer((width * scale).toInt(), (height * scale).toInt())
         clearViewSurfaceTexture()
         isCreated = true
-        noiseTextureID = TextureHelper.loadTexture(context, R.drawable.noise)
     }
 
 
@@ -101,19 +89,20 @@ class GLSurfaceViewRenderer(private val context: Context, internal val scale: Fl
         Matrix.orthoM(projectionMatrixOrtho, 0, left, right, bottom, top, near, far)
     }
 
-
-    private fun renderFullscreenRenderTexture() {
+    internal fun onDrawFrame() {
         surfaceTexture.updateTexture()
 
         if (blurMode == BlurMode.BOX) {
-            blurPass(renderTexture, boxHorizontal, false, surfaceTexture.getTextureID())
-            blurPass(renderTextureVertical, boxVertical, true, renderTexture.fboTex)
+            blurPass(renderTextureHorizontal, boxHorizontal, false, surfaceTexture.getTextureID())
+            blurPass(renderTextureVertical, boxVertical, true, renderTextureHorizontal.fboTex)
         } else if (blurMode == BlurMode.STACK) {
-            blurPass(renderTexture, stackHorizontal, false, surfaceTexture.getTextureID())
-            blurPass(renderTextureVertical, stackVertical, true, renderTexture.fboTex)
+            blurPass(renderTextureHorizontal, stackHorizontal, false, surfaceTexture.getTextureID())
+            blurPass(renderTextureVertical, stackVertical, true, renderTextureHorizontal.fboTex)
         } else if (blurMode == BlurMode.GAUSS_2_PASS) {
-            blurPass(renderTexture, gauss2PassHorizontal, false, surfaceTexture.getTextureID())
-            blurPass(renderTextureVertical, gauss2PassVertical, true, renderTexture.fboTex)
+            blurPass(renderTextureHorizontal, gauss2PassHorizontal, false, surfaceTexture.getTextureID())
+            blurPass(renderTextureVertical, gauss2PassVertical, true, renderTextureHorizontal.fboTex)
+
+
         } else {
             blurPass(renderTextureVertical, gauss1PassNoised, false, surfaceTexture.getTextureID())
         }
@@ -124,45 +113,45 @@ class GLSurfaceViewRenderer(private val context: Context, internal val scale: Fl
     fun renderFullscreenTexture() {
         setupViewPort(width, height)
         fullscreenTextureShader.useProgram()
-        glUniformMatrix4fv(glGetUniformLocation(fullscreenTextureShader.program, ShaderProgram.U_MATRIX), 1, false, projectionMatrixOrtho, 0)
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(fullscreenTextureShader.program, ShaderProgram.U_MATRIX), 1, false, projectionMatrixOrtho, 0)
 
-        glActiveTexture(GLES30.GL_TEXTURE0)
-        glBindTexture(GL_TEXTURE_2D, renderTextureVertical.fboTex)
-        glUniform1i(glGetUniformLocation(fullscreenTextureShader.program, "u_TextureUnit"), 0)
+        GLES20.glActiveTexture(GLES30.GL_TEXTURE0)
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, renderTextureVertical.fboTex)
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(fullscreenTextureShader.program, "u_TextureUnit"), 0)
         spriteMesh.bindData(fullscreenTextureShader)
         spriteMesh.draw()
     }
+
 
     fun blurPass(renderTexture: RenderTexture, blurShader: TextureShaderProgram, isVerticalPass: Boolean, bindTextureID: Int) {
         setupViewPort((width * scale).toInt(), (height * scale).toInt())
         renderTexture.bindRenderTexture()
         blurShader.useProgram()
-        glUniformMatrix4fv(glGetUniformLocation(blurShader.program, ShaderProgram.U_MATRIX), 1, false, projectionMatrixOrtho, 0)
-        glActiveTexture(GLES30.GL_TEXTURE0)
-        if (isVerticalPass) {
-            glBindTexture(GL_TEXTURE_2D, bindTextureID)
-            glUniform1f(glGetUniformLocation(blurShader.program, "uWidthOffset"), 1f / width.toFloat() / scale)
-            glUniform1f(glGetUniformLocation(blurShader.program, "uHeightOffset"), 0f)
+        GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(blurShader.program, ShaderProgram.U_MATRIX), 1, false, projectionMatrixOrtho, 0)
+        GLES20.glActiveTexture(GLES30.GL_TEXTURE0)
+        if (bindTextureID != surfaceTexture.getTextureID()) {
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, bindTextureID)
         } else {
-            glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, bindTextureID)
+            GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, bindTextureID)
+        }
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(blurShader.program, "u_TextureUnit"), 0)
+        if (isVerticalPass) {
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uWidthOffset"), 1f / width.toFloat() / scale)
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uHeightOffset"), 0f)
+        } else {
+
             if (blurMode != BlurMode.GAUSS_1_PASS) {
-                glUniform1f(glGetUniformLocation(blurShader.program, "uWidthOffset"), 0f)
-                glUniform1f(glGetUniformLocation(blurShader.program, "uHeightOffset"), 1f / height.toFloat() / scale)
+                GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uWidthOffset"), 0f)
+                GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uHeightOffset"), 1f / height.toFloat() / scale)
             }
         }
-        glUniform1i(glGetUniformLocation(blurShader.program, "u_TextureUnit"), 0)
-        glUniform1f(glGetUniformLocation(blurShader.program, "scale"), scale)
 
-        glUniform1i(glGetUniformLocation(blurShader.program, "blurRadius"), blurRadius.toInt())
+        GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "scale"), scale)
+
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(blurShader.program, "blurRadius"), blurRadius.toInt())
 
         spriteMesh.bindData(blurShader)
         spriteMesh.draw()
         renderTexture.unbindRenderTexture()
-    }
-
-    override fun onDrawFrame(glUnused: GL10) {
-        glClear(GL_COLOR_BUFFER_BIT)
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
-        renderFullscreenRenderTexture()
     }
 }

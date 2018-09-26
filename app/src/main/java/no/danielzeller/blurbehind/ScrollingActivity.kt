@@ -8,8 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.SeekBar
 import kotlinx.android.synthetic.main.activity_scrolling.*
-import kotlinx.android.synthetic.main.content_scrolling.*
-import no.danielzeller.blurbehindlib.BlurMode
+import no.danielzeller.blurbehindlib.renderers.BlurMode
 
 class ScrollingActivity : AppCompatActivity() {
 
@@ -17,17 +16,13 @@ class ScrollingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scrolling)
         setSupportActionBar(toolbar)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-        blurBehindView.viewBehind = scrollView
-        blurBehindView.fpsTextView = fps
+
+        blurBehindView.viewBehind = root
+
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                blurBehindView.setBlurRadius(progress.toFloat()*2f)
+                blurBehindView.setBlurRadius(progress.toFloat())
             }
-
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
@@ -57,10 +52,6 @@ class ScrollingActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)

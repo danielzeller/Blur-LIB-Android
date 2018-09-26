@@ -1,4 +1,4 @@
-precision highp float;
+precision mediump float;
 
 
 
@@ -24,14 +24,15 @@ void main() {
     vec2 flippedYUV=v_TextureCoordinates;
 
 
-    for(int i = 0; i < diameter; i++) {
-       vec2 offset = vec2(float(i - blurRadius) * uWidthOffset,  float(i - blurRadius) * uHeightOffset);
-       sampleTex = vec3(texture2D(u_TextureUnit, flippedYUV.st+offset));
-       float index = float(i);
-       float gaussWeight = getGaussWeight(index - float(diameter - 1)/2.0,  (float(diameter - 1)/2.0 + 1.0) / 2.0);
-       col += sampleTex * gaussWeight;
-       weightSum += gaussWeight;
-    }
+    int step = int(float( blurRadius/15)*scale)+1;
+       for(int i = 0; i < diameter; i+=step) {
+          vec2 offset = vec2(float(i - blurRadius) * uWidthOffset,  float(i - blurRadius) * uHeightOffset);
+          sampleTex = vec3(texture2D(u_TextureUnit, flippedYUV.st+offset));
+          float index = float(i);
+          float gaussWeight = getGaussWeight(index - float(diameter - 1)/2.0,  (float(diameter - 1)/2.0 + 1.0) / 2.0);
+          col += sampleTex * gaussWeight;
+          weightSum += gaussWeight;
+       }
 
 
     gl_FragColor = vec4(col / weightSum, 1.0);
