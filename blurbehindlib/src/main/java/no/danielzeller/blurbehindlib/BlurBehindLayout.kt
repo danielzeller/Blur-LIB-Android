@@ -6,14 +6,11 @@ import android.graphics.PixelFormat
 import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.opengl.GLSurfaceView
-import android.util.AttributeSet
-import android.util.Log
+import android.util.AttributeSet 
 import android.view.Choreographer
 import android.view.TextureView
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.TextView
-import no.danielzeller.blurbehindlib.renderers.BlurMode
 import no.danielzeller.blurbehindlib.renderers.CommonRenderer
 import no.danielzeller.blurbehindlib.renderers.GLSurfaceViewRenderer
 import no.danielzeller.blurbehindlib.renderers.TextureViewRenderer
@@ -28,6 +25,7 @@ class BlurBehindLayout : FrameLayout {
     private var useTextureView = false
     private lateinit var commonRenderer: CommonRenderer
     private val scale = 0.4f
+
     constructor(context: Context, useTextureView: Boolean) : super(context) {
         initView(context)
         this.useTextureView = useTextureView
@@ -98,7 +96,4 @@ class BlurBehindLayout : FrameLayout {
         commonRenderer.blurRadius = value
     }
 
-    fun setBlurType(mode: BlurMode) {
-        commonRenderer.blurMode = mode
-    }
 }

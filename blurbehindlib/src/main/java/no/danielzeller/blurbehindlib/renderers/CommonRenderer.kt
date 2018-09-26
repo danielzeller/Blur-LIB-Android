@@ -10,22 +10,14 @@ import android.opengl.Matrix
 import no.danielzeller.blurbehindlib.*
 import no.opengl.danielzeller.opengltesting.opengl.gameobject.RenderTexture
 
-class CommonRenderer (private val context: Context, internal val scale: Float){
+class CommonRenderer(private val context: Context, internal val scale: Float) {
 
     private val projectionMatrixOrtho = FloatArray(16)
     private lateinit var spriteMesh: SpriteMesh
     private val fullscreenTextureShader = TextureShaderProgram(R.raw.vertex_shader, R.raw.texture_fragment_shader)
 
-    private val stackHorizontal = TextureShaderProgram(R.raw.vertex_shader, R.raw.stack_2_pass_horizontal)
-    private val stackVertical = TextureShaderProgram(R.raw.vertex_shader, R.raw.stack_2_pass_vertical)
-
-    private val boxHorizontal = TextureShaderProgram(R.raw.vertex_shader, R.raw.box_2_pass_horizontal)
-    private val boxVertical = TextureShaderProgram(R.raw.vertex_shader, R.raw.box_2_pass_vertical)
-
     private val gauss2PassHorizontal = TextureShaderProgram(R.raw.vertex_shader, R.raw.gauss_2_pass_horizontal)
     private val gauss2PassVertical = TextureShaderProgram(R.raw.vertex_shader, R.raw.gauss_2_pass_vertical)
-
-    private val gauss1PassNoised = TextureShaderProgram(R.raw.vertex_shader, R.raw.gauss_one_pass_noised)
 
     var surfaceTexture = ViewSurfaceTexture()
     var isCreated = false
@@ -36,29 +28,19 @@ class CommonRenderer (private val context: Context, internal val scale: Float){
     private var renderTextureVertical = RenderTexture()
 
     var blurRadius = 50f
-    var blurMode = BlurMode.GAUSS_2_PASS
 
-     fun onSurfaceCreated() {
+    fun onSurfaceCreated() {
 
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
 
         spriteMesh = SpriteMesh()
         fullscreenTextureShader.load(context)
 
-        stackHorizontal.load(context)
-        stackVertical.load(context)
-
-        boxHorizontal.load(context)
-        boxVertical.load(context)
-
         gauss2PassHorizontal.load(context)
         gauss2PassVertical.load(context)
-
-        gauss1PassNoised.load(context)
-
     }
 
-    fun onSurfaceChanged( width: Int, height: Int) {
+    fun onSurfaceChanged(width: Int, height: Int) {
         this.width = width
         this.height = height
 
@@ -91,22 +73,8 @@ class CommonRenderer (private val context: Context, internal val scale: Float){
 
     internal fun onDrawFrame() {
         surfaceTexture.updateTexture()
-
-        if (blurMode == BlurMode.BOX) {
-            blurPass(renderTextureHorizontal, boxHorizontal, false, surfaceTexture.getTextureID())
-            blurPass(renderTextureVertical, boxVertical, true, renderTextureHorizontal.fboTex)
-        } else if (blurMode == BlurMode.STACK) {
-            blurPass(renderTextureHorizontal, stackHorizontal, false, surfaceTexture.getTextureID())
-            blurPass(renderTextureVertical, stackVertical, true, renderTextureHorizontal.fboTex)
-        } else if (blurMode == BlurMode.GAUSS_2_PASS) {
-            blurPass(renderTextureHorizontal, gauss2PassHorizontal, false, surfaceTexture.getTextureID())
-            blurPass(renderTextureVertical, gauss2PassVertical, true, renderTextureHorizontal.fboTex)
-
-
-        } else {
-            blurPass(renderTextureVertical, gauss1PassNoised, false, surfaceTexture.getTextureID())
-        }
-
+        blurPass(renderTextureHorizontal, gauss2PassHorizontal, false, surfaceTexture.getTextureID())
+        blurPass(renderTextureVertical, gauss2PassVertical, true, renderTextureHorizontal.fboTex)
         renderFullscreenTexture()
     }
 
@@ -127,7 +95,9 @@ class CommonRenderer (private val context: Context, internal val scale: Float){
         setupViewPort((width * scale).toInt(), (height * scale).toInt())
         renderTexture.bindRenderTexture()
         blurShader.useProgram()
+
         GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(blurShader.program, ShaderProgram.U_MATRIX), 1, false, projectionMatrixOrtho, 0)
+
         GLES20.glActiveTexture(GLES30.GL_TEXTURE0)
         if (bindTextureID != surfaceTexture.getTextureID()) {
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, bindTextureID)
@@ -135,19 +105,16 @@ class CommonRenderer (private val context: Context, internal val scale: Float){
             GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, bindTextureID)
         }
         GLES20.glUniform1i(GLES20.glGetUniformLocation(blurShader.program, "u_TextureUnit"), 0)
+
         if (isVerticalPass) {
             GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uWidthOffset"), 1f / width.toFloat() / scale)
             GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uHeightOffset"), 0f)
         } else {
-
-            if (blurMode != BlurMode.GAUSS_1_PASS) {
-                GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uWidthOffset"), 0f)
-                GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uHeightOffset"), 1f / height.toFloat() / scale)
-            }
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uWidthOffset"), 0f)
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uHeightOffset"), 1f / height.toFloat() / scale)
         }
 
         GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "scale"), scale)
-
         GLES20.glUniform1i(GLES20.glGetUniformLocation(blurShader.program, "blurRadius"), blurRadius.toInt())
 
         spriteMesh.bindData(blurShader)
