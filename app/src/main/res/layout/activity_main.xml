@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:id="@+id/viewToBlur"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ScrollView
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/dark_grey">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="110dp">
+
+                <include layout="@layout/card2"></include>
+
+                <include layout="@layout/card3"></include>
+
+                <include layout="@layout/card4"></include>
+
+                <include layout="@layout/card1"></include>
+
+                <include layout="@layout/card1"></include>
+
+                <include layout="@layout/card1"></include>
+
+                <include layout="@layout/card1"></include>
+
+                <include layout="@layout/card1"></include>
+
+                <include layout="@layout/card1"></include>
+            </LinearLayout>
+
+        </ScrollView>
+    </FrameLayout>
+
+    <no.danielzeller.blurbehindlib.BlurBehindLayout
+        android:id="@+id/topBarBlurLayout"
+        android:layout_width="0dp"
+        android:layout_height="85dp"
+        android:background="@color/colorAccent"
+        android:elevation="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:id="@+id/appBarDimmer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.4"
+            android:background="@android:color/black" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="35dp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:text="Blur Demo"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+    </no.danielzeller.blurbehindlib.BlurBehindLayout>
+
+    <no.danielzeller.blurbehindlib.BlurBehindLayout
+        android:id="@+id/navigationBarBlurLayout"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:background="@color/colorAccent"
+        android:elevation="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </no.danielzeller.blurbehindlib.BlurBehindLayout>
+</android.support.constraint.ConstraintLayout>

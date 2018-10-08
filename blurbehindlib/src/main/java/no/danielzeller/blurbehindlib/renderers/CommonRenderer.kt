@@ -27,7 +27,7 @@ class CommonRenderer(private val context: Context, internal val scale: Float) {
     private var renderTextureHorizontal = RenderTexture()
     private var renderTextureVertical = RenderTexture()
 
-    var blurRadius = 50f
+    var blurRadius = 40f
 
     fun onSurfaceCreated() {
 
@@ -40,13 +40,14 @@ class CommonRenderer(private val context: Context, internal val scale: Float) {
         gauss2PassVertical.load(context)
     }
 
+    var paddingTop = 0f
     fun onSurfaceChanged(width: Int, height: Int) {
         this.width = width
         this.height = height
-
-        surfaceTexture.createSurface((width * scale).toInt(), (height * scale).toInt())
-        renderTextureHorizontal.InitiateFrameBuffer((width * scale).toInt(), (height * scale).toInt())
-        renderTextureVertical.InitiateFrameBuffer((width * scale).toInt(), (height * scale).toInt())
+        paddingTop = 50f * context.resources.displayMetrics.density
+        surfaceTexture.createSurface((width * scale).toInt(), ((height + paddingTop) * scale).toInt())
+        renderTextureHorizontal.InitiateFrameBuffer((width * scale).toInt(), ((height + paddingTop) * scale).toInt())
+        renderTextureVertical.InitiateFrameBuffer((width * scale).toInt(), ((height + paddingTop) * scale).toInt())
         clearViewSurfaceTexture()
         isCreated = true
     }
@@ -58,15 +59,14 @@ class CommonRenderer(private val context: Context, internal val scale: Float) {
         surfaceTexture.endDraw(canvas)
     }
 
-    private fun setupViewPort(width: Int, height: Int) {
-        GLES20.glViewport(0, 0, width, height)
+    private fun setupViewPort(width: Int, height: Int, offset: Float) {
+        GLES20.glViewport(0, -(offset*0.5f).toInt(), width, (height+offset).toInt())
         val left = -1.0f
         val right = 1.0f
-        val bottom = 1.0f
-        val top = -1.0f
+        val bottom = 1f
+        val top = -1f
         val near = -1.0f
         val far = 1.0f
-
         Matrix.setIdentityM(projectionMatrixOrtho, 0)
         Matrix.orthoM(projectionMatrixOrtho, 0, left, right, bottom, top, near, far)
     }
@@ -79,7 +79,7 @@ class CommonRenderer(private val context: Context, internal val scale: Float) {
     }
 
     fun renderFullscreenTexture() {
-        setupViewPort(width, height)
+        setupViewPort(width, height, paddingTop)
         fullscreenTextureShader.useProgram()
         GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(fullscreenTextureShader.program, ShaderProgram.U_MATRIX), 1, false, projectionMatrixOrtho, 0)
 
@@ -92,7 +92,7 @@ class CommonRenderer(private val context: Context, internal val scale: Float) {
 
 
     fun blurPass(renderTexture: RenderTexture, blurShader: TextureShaderProgram, isVerticalPass: Boolean, bindTextureID: Int) {
-        setupViewPort((width * scale).toInt(), (height * scale).toInt())
+        setupViewPort((width * scale).toInt(), ((height+paddingTop) * scale).toInt(), 0f)
         renderTexture.bindRenderTexture()
         blurShader.useProgram()
 

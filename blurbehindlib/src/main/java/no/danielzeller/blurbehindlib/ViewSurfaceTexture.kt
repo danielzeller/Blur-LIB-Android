@@ -1,6 +1,5 @@
 package no.danielzeller.blurbehindlib
 
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.SurfaceTexture
 import android.opengl.GLES11Ext.GL_TEXTURE_EXTERNAL_OES

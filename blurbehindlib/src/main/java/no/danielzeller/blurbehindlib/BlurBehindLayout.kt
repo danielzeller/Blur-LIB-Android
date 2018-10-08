@@ -6,7 +6,8 @@ import android.graphics.PixelFormat
 import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.opengl.GLSurfaceView
-import android.util.AttributeSet 
+import android.util.AttributeSet
+import android.util.Log
 import android.view.Choreographer
 import android.view.TextureView
 import android.view.View
@@ -19,12 +20,16 @@ import no.opengl.danielzeller.opengltesting.opengl.util.FrameRateCounter
 class BlurBehindLayout : FrameLayout {
 
     var viewBehind: View? = null
+        set(value) {
+            field = value
+        }
 
     private val viewBehindRect = Rect()
     private val thisViewRect = Rect()
-    private var useTextureView = false
+    private var useTextureView = true
     private lateinit var commonRenderer: CommonRenderer
     private val scale = 0.4f
+    var currentFPS = 0f
 
     constructor(context: Context, useTextureView: Boolean) : super(context) {
         initView(context)
@@ -36,19 +41,23 @@ class BlurBehindLayout : FrameLayout {
     }
 
     fun initView(context: Context) {
-
+        setWillNotDraw(false)
         commonRenderer = CommonRenderer(context, scale)
         if (useTextureView) {
             createTextureView(context)
         } else {
             createGLSurfaceView(context)
         }
-        Choreographer.getInstance().postFrameCallback { redrawContent() }
+        Choreographer.getInstance().postFrameCallback { redrawBlurTexture() }
     }
+
+
+    private lateinit var renderView: View
 
     fun createGLSurfaceView(context: Context) {
         var glSurfaceView = GLSurfaceView(context)
         glSurfaceView.setEGLContextClientVersion(2)
+        glSurfaceView.setBackgroundColor(Color.TRANSPARENT)
         glSurfaceView.setZOrderOnTop(false)
         glSurfaceView.getHolder().setFormat(PixelFormat.RGBA_8888);
         glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
@@ -57,43 +66,48 @@ class BlurBehindLayout : FrameLayout {
         var openglGLRenderer = GLSurfaceViewRenderer(context, 0.3f)
         glSurfaceView.setRenderer(openglGLRenderer)
         openglGLRenderer.commonRenderer = commonRenderer
+        renderView = glSurfaceView
     }
 
+    private lateinit var textureViewRenderer: TextureViewRenderer
     fun createTextureView(context: Context) {
         var textureView = TextureView(context)
-        val textureViewRenderer = TextureViewRenderer(context, 0.3f)
+        textureViewRenderer = TextureViewRenderer(context, 0.3f)
         textureView.surfaceTextureListener = textureViewRenderer
         addView(textureView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
         textureViewRenderer.commonRenderer = commonRenderer
+        renderView = textureView
     }
 
-    fun redrawContent() {
+
+    fun redrawBlurTexture() {
 
         if (commonRenderer.isCreated) {
             val glCanvas = commonRenderer.surfaceTexture.beginDraw()
-
             glCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
             viewBehind?.getHitRect(viewBehindRect)
             getHitRect(thisViewRect)
             glCanvas?.scale(commonRenderer.scale, commonRenderer.scale)
-            glCanvas?.translate((thisViewRect.left - viewBehindRect.left).toFloat(), (viewBehindRect.top - thisViewRect.top).toFloat())
-
-            if (glCanvas != null)
-                viewBehind?.draw(glCanvas)
+            glCanvas?.translate((thisViewRect.left - viewBehindRect.left).toFloat(), (viewBehindRect.top - thisViewRect.top + commonRenderer.paddingTop * 0.5f).toFloat())
             visibility = View.INVISIBLE
-            commonRenderer.surfaceTexture.endDraw(glCanvas)
+            viewBehind?.draw(glCanvas)
             visibility = View.VISIBLE
-            FrameRateCounter.timeStep()
-
-//            val fps = 1.0f / FrameRateCounter.deltaTime2
-//            Log.i("BlurView","FPS: "+ + (fps + 1.0f).toInt())
+            commonRenderer.surfaceTexture.endDraw(glCanvas)
+            if (useTextureView) {
+                textureViewRenderer.update()
+            }
+            captureFPS()
         }
+        Choreographer.getInstance().postFrameCallback { redrawBlurTexture() }
+    }
 
-        Choreographer.getInstance().postFrameCallback { redrawContent() }
+    fun captureFPS() {
+        FrameRateCounter.timeStep()
+        currentFPS = 1.0f / FrameRateCounter.deltaTime2
+        Log.i("FPS", "FPS: " + currentFPS)
     }
 
     fun setBlurRadius(value: Float) {
         commonRenderer.blurRadius = value
     }
-
 }
