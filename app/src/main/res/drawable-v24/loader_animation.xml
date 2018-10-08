@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/loader" >
+    <target
+        android:name="Path1"
+        android:animation="@animator/rotate1anim" />
+    <target
+        android:name="Path2"
+        android:animation="@animator/rotate2anim" />
+    <target
+        android:name="Path3"
+        android:animation="@animator/rotate3anim" />
+
+</animated-vector>

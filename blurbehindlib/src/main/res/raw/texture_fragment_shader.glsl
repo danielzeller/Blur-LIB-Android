@@ -1,3 +1,4 @@
+#extension GL_OES_EGL_image_external : require
 precision mediump float;
 
 uniform sampler2D u_TextureUnit;

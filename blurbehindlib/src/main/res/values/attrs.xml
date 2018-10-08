@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Blur">
+
+        <attr name="useTextureView" format="boolean" />
+        <attr name="updateMode" format="enum">
+            <enum name="continously" value="0" />
+            <enum name="onScroll" value="1" />
+            <enum name="manually" value="2" />
+        </attr>
+
+    </declare-styleable>
+</resources>

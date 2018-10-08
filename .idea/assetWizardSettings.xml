@@ -14,8 +14,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_gradient" />
-                            <entry key="sourceFile" value="$USER_HOME$/Desktop/gradient.svg" />
+                            <entry key="height" value="512" />
+                            <entry key="outputName" value="ic_loader_1" />
+                            <entry key="overrideSize" value="true" />
+                            <entry key="sourceFile" value="C:\Users\Danie\Desktop\loader-1.svg" />
+                            <entry key="width" value="512" />
                           </map>
                         </option>
                       </PersistentState>

@@ -28,6 +28,7 @@ class CommonRenderer(private val context: Context, internal val scale: Float) {
     private var renderTextureVertical = RenderTexture()
 
     var blurRadius = 40f
+    var paddingTop = 0f
 
     fun onSurfaceCreated() {
 
@@ -40,7 +41,6 @@ class CommonRenderer(private val context: Context, internal val scale: Float) {
         gauss2PassVertical.load(context)
     }
 
-    var paddingTop = 0f
     fun onSurfaceChanged(width: Int, height: Int) {
         this.width = width
         this.height = height

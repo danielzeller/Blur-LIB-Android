@@ -14,40 +14,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <ScrollView
-
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/dark_grey">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="110dp">
-
-                <include layout="@layout/card2"></include>
-
-                <include layout="@layout/card3"></include>
-
-                <include layout="@layout/card4"></include>
-
-                <include layout="@layout/card1"></include>
-
-                <include layout="@layout/card1"></include>
-
-                <include layout="@layout/card1"></include>
-
-                <include layout="@layout/card1"></include>
-
-                <include layout="@layout/card1"></include>
-
-                <include layout="@layout/card1"></include>
-            </LinearLayout>
-
-        </ScrollView>
+            android:background="@color/dark_grey"/>
     </FrameLayout>
 
     <no.danielzeller.blurbehindlib.BlurBehindLayout
@@ -58,7 +29,9 @@
         android:elevation="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:updateMode="onScroll"
+        app:useTextureView="false">
 
         <View
             android:id="@+id/appBarDimmer"
@@ -87,7 +60,9 @@
         android:elevation="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:updateMode="onScroll"
+        app:useTextureView="false">
 
     </no.danielzeller.blurbehindlib.BlurBehindLayout>
 </android.support.constraint.ConstraintLayout>
