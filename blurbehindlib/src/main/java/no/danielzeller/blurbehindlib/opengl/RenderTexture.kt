@@ -63,16 +63,6 @@ class RenderTexture {
         return renderTextureID
     }
 
-    fun bindRenderTexture(modelMatrix: FloatArray) {
-
-        GLES20.glEnable(GLES20.GL_TEXTURE_2D)
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, renderTextureID)
-        glViewport(0, 0, fboWidth, fboHeight)
-        setIdentityM(modelMatrix, 0)
-        glClearColor(1f, 1f, 1f, 0.0f)
-        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
-    }
-
     fun bindRenderTexture() {
 
         GLES20.glEnable(GLES20.GL_TEXTURE_2D)

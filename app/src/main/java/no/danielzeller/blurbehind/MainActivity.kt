@@ -8,11 +8,10 @@ import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import no.danielzeller.blurbehind.model.UnsplashItem
 
-class MainActivity : AppCompatActivity() {
+private const val UNSPLASH_RANDOM_URL = "https://source.unsplash.com/random?"
+private const val CARDS_COUNT = 12
 
-    private val cardsLayouts = intArrayOf(R.layout.card2, R.layout.card3, R.layout.card4, R.layout.card4)
-    private val UNSPLASH_RANDOM_URL = "https://source.unsplash.com/random?"
-    private val CARDS_COUNT = 12
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,13 +23,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setupBlurBiews() {
-        topBarBlurLayout.viewBehind = viewToBlur
+        appBarBlurLayout.viewBehind = viewToBlur
         navigationBarBlurLayout.viewBehind = viewToBlur
     }
 
     private fun setupRecyclerView() {
         val gridLayoutManager = GridLayoutManager(this, 2)
-        val unsplashGridAdapter = UnsplashGridAdapter(createItems())
+        val unsplashGridAdapter = UnsplashGridAdapter(createUnsplashItems(), supportFragmentManager)
 
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(p0: Int): Int {
@@ -45,13 +44,17 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = unsplashGridAdapter
     }
 
-    private fun createItems(): ArrayList<UnsplashItem> {
+    private fun createUnsplashItems(): ArrayList<UnsplashItem> {
         var items = ArrayList<UnsplashItem>()
+
+        val cardsLayouts = intArrayOf(R.layout.card2, R.layout.card3, R.layout.card4, R.layout.card4)
         val headings = resources.getStringArray(R.array.headings)
+        val subHeadings = resources.getStringArray(R.array.sub_headings)
+
         var cardTypeIndex = 0
 
         for (i in 0 until CARDS_COUNT) {
-            items.add(UnsplashItem(UNSPLASH_RANDOM_URL + i, headings[i], "RANDOM IMAGE FROM UNSPLASH", cardsLayouts[cardTypeIndex]))
+            items.add(UnsplashItem(UNSPLASH_RANDOM_URL + i, headings[i], subHeadings[i], cardsLayouts[cardTypeIndex]))
 
             cardTypeIndex += 1
             if (cardTypeIndex == cardsLayouts.size) cardTypeIndex = 0

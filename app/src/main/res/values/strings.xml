@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">BlurBehind</string>
+    <string name="app_name">Blur Behind</string>
 
-    <string name="title_activity_main">MainActivity</string>
 
     <string-array name="headings">
         <item>Breaktrough in baldness treatment</item>
@@ -20,4 +19,25 @@
         <item>Me too</item>
         <item>Woouoo</item>
     </string-array>
+
+    <string-array name="sub_headings">
+        <item>SPECIAL REPORT</item>
+        <item>BREAKING NEWS</item>
+        <item> </item>
+        <item> </item>
+
+
+        <item>POLITICS</item>
+        <item>WORLD</item>
+        <item> </item>
+        <item> </item>
+
+        <item>LIFESTYLE</item>
+        <item>BREAKING NEWS</item>
+        <item>Me too</item>
+        <item>Woouoo</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

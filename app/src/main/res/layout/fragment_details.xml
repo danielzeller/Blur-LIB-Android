@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetailsFragment">
+
+
+    <no.danielzeller.blurbehindlib.BlurBehindLayout
+        android:id="@+id/fullscreenBlur"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/topbar_height"
+        android:layout_marginBottom="@dimen/navigationbar_height"
+        app:blurRadius="0"
+        app:blurTextureScale="0.3"
+        app:updateMode="manually"
+        app:useTextureView="false">
+
+    </no.danielzeller.blurbehindlib.BlurBehindLayout>
+
+    <View
+        android:id="@+id/fullscreenDimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:background="@color/dark_grey" />
+
+
+</FrameLayout>

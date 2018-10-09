@@ -11,11 +11,14 @@ class GLSurfaceViewRenderer(private val context: Context, internal val scale: Fl
     lateinit var commonRenderer: CommonRenderer
 
     override fun onSurfaceCreated(glUnused: GL10, config: EGLConfig) {
+        glClear(GL_COLOR_BUFFER_BIT)
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
         commonRenderer.onSurfaceCreated()
     }
 
     override fun onSurfaceChanged(glUnused: GL10, width: Int, height: Int) {
+        glClear(GL_COLOR_BUFFER_BIT)
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
         commonRenderer.onSurfaceChanged(width, height)
     }
 

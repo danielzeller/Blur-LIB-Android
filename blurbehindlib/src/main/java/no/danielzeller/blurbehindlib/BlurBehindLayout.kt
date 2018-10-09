@@ -6,7 +6,10 @@ import android.graphics.PixelFormat
 import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.opengl.GLSurfaceView
+import android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY
+import android.os.Handler
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Choreographer
 import android.view.TextureView
 import android.view.View
@@ -37,18 +40,27 @@ class BlurBehindLayout : FrameLayout {
             field = value
         }
 
+    var blurRadius = 40f
+        set(value) {
+
+            commonRenderer?.blurRadius = value
+            field = value
+        }
+
     var currentFPS = 0f
 
     private val viewBehindRect = Rect()
     private val thisViewRect = Rect()
     private var useTextureView = false
-    private lateinit var commonRenderer: CommonRenderer
-    private val scale = 0.4f
+    private var commonRenderer: CommonRenderer? = null
+    private var blurTextureScale = 0.4f
     private lateinit var textureViewRenderer: TextureViewRenderer
     private lateinit var renderView: View
     private var updateViewUntil = -1L
+    private var isBlurDisabled = false
 
-    constructor(context: Context, useTextureView: Boolean) : super(context) {
+    constructor(context: Context, useTextureView: Boolean, blurTextureScale: Float) : super(context) {
+        this.blurTextureScale = blurTextureScale
         initView(context)
         this.useTextureView = useTextureView
     }
@@ -56,10 +68,6 @@ class BlurBehindLayout : FrameLayout {
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
         loadAttributesFromXML(attributeSet)
         initView(context)
-    }
-
-    fun setBlurRadius(value: Float) {
-        commonRenderer.blurRadius = value
     }
 
     fun updateForMilliSeconds(milliSeconds: Long) {
@@ -70,7 +78,8 @@ class BlurBehindLayout : FrameLayout {
 
     private fun initView(context: Context) {
         setWillNotDraw(false)
-        commonRenderer = CommonRenderer(context, scale)
+        commonRenderer = CommonRenderer(context, blurTextureScale)
+        commonRenderer!!.blurRadius = blurRadius
         if (useTextureView) {
             createTextureView(context)
         } else {
@@ -87,6 +96,8 @@ class BlurBehindLayout : FrameLayout {
         try {
             useTextureView = typedArray.getBoolean(R.styleable.Blur_useTextureView, true)
             updateMode = convertIntToEnum(typedArray.getInteger(R.styleable.Blur_updateMode, updateMode.ordinal))
+            blurRadius = typedArray.getFloat(R.styleable.Blur_blurRadius, blurRadius)
+            blurTextureScale = typedArray.getFloat(R.styleable.Blur_blurTextureScale, blurTextureScale)
         } finally {
             typedArray.recycle()
         }
@@ -105,15 +116,14 @@ class BlurBehindLayout : FrameLayout {
     private fun createGLSurfaceView(context: Context) {
         var glSurfaceView = GLSurfaceView(context)
         glSurfaceView.setEGLContextClientVersion(2)
-        glSurfaceView.setBackgroundColor(Color.TRANSPARENT)
-        glSurfaceView.setZOrderOnTop(false)
-        glSurfaceView.getHolder().setFormat(PixelFormat.RGBA_8888);
-        glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
+        glSurfaceView.setZOrderMediaOverlay(true)
         addView(glSurfaceView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
-
+        glSurfaceView.translationX = 100000f
+        Handler().postDelayed({ glSurfaceView.translationX = 0f }, 100)
         var openglGLRenderer = GLSurfaceViewRenderer(context, 0.3f)
         glSurfaceView.setRenderer(openglGLRenderer)
-        openglGLRenderer.commonRenderer = commonRenderer
+        glSurfaceView.renderMode = RENDERMODE_WHEN_DIRTY
+        openglGLRenderer.commonRenderer = commonRenderer!!
         renderView = glSurfaceView
     }
 
@@ -122,15 +132,18 @@ class BlurBehindLayout : FrameLayout {
         textureViewRenderer = TextureViewRenderer(context, 0.3f)
         textureView.surfaceTextureListener = textureViewRenderer
         addView(textureView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
-        textureViewRenderer.commonRenderer = commonRenderer
+        textureViewRenderer.commonRenderer = commonRenderer!!
         renderView = textureView
     }
 
     private fun redrawBlurTexture() {
-        if (commonRenderer.isCreated) {
+        if (commonRenderer!!.isCreated && renderView.visibility == View.VISIBLE) {
             renderBehindViewToTexture()
             if (useTextureView) {
                 textureViewRenderer.update()
+            } else {
+                (renderView as GLSurfaceView).requestRender()
+
             }
             captureFPS()
         }
@@ -144,6 +157,7 @@ class BlurBehindLayout : FrameLayout {
     }
 
     private fun renderBehindViewToTexture() {
+        val commonRenderer = commonRenderer!!
         val glCanvas = commonRenderer.surfaceTexture.beginDraw()
         glCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         viewBehind?.getHitRect(viewBehindRect)
@@ -154,6 +168,7 @@ class BlurBehindLayout : FrameLayout {
         viewBehind?.draw(glCanvas)
         visibility = View.VISIBLE
         commonRenderer.surfaceTexture.endDraw(glCanvas)
+
     }
 
     private fun captureFPS() {
@@ -179,12 +194,20 @@ class BlurBehindLayout : FrameLayout {
         updateForMilliSeconds(500)
     }
 
-    override fun onVisibilityChanged(changedView: View, visibility: Int) {
-        super.onVisibilityChanged(changedView, visibility)
-        if (visibility == View.VISIBLE) {
-            updateForMilliSeconds(100)
-        } else {
-            Choreographer.getInstance().removeFrameCallback(frameCallBack)
+    fun disable() {
+        Choreographer.getInstance().removeFrameCallback(frameCallBack)
+        viewTreeObserver.removeOnScrollChangedListener(onScrollChangesListener)
+        renderView.visibility = GONE
+        isBlurDisabled = true
+    }
+
+    fun enable() {
+        if (isBlurDisabled) {
+            if (updateMode == UpdateMode.ON_SCROLL) {
+                addOnScrollListener()
+            }
+            updateForMilliSeconds(50)
+            isBlurDisabled = false
         }
     }
 }

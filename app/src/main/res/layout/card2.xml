@@ -6,6 +6,7 @@
     android:layerType="hardware">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/cardview"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipChildren="true"
@@ -16,7 +17,7 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" >
 
         <ImageView
             android:id="@+id/image"
@@ -34,10 +35,10 @@
             android:gravity="left|bottom"
             android:paddingLeft="16dp"
             android:paddingTop="24dp"
-            android:paddingBottom="42dp"
+            android:paddingBottom="45dp"
             android:text="I'M A HEADING"
             android:textColor="@android:color/white"
-            android:textSize="32dp"
+            android:textSize="24dp"
             android:textStyle="bold" />
 
         <TextView

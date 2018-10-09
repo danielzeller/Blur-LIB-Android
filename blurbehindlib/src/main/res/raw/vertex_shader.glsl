@@ -1,4 +1,3 @@
-#extension GL_OES_EGL_image_external : require
 uniform mat4 u_Matrix;
 
 attribute vec4 a_Position;  

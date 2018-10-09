@@ -10,28 +10,39 @@
         android:id="@+id/viewToBlur"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/dark_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/dark_grey"/>
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/overlayFragmentContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
     </FrameLayout>
 
     <no.danielzeller.blurbehindlib.BlurBehindLayout
-        android:id="@+id/topBarBlurLayout"
+        android:id="@+id/appBarBlurLayout"
         android:layout_width="0dp"
-        android:layout_height="85dp"
-        android:background="@color/colorAccent"
-        android:elevation="50dp"
+        android:layout_height="@dimen/topbar_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:updateMode="onScroll"
-        app:useTextureView="false">
+        app:useTextureView="false"
+        app:blurRadius = "100.0">
 
         <View
             android:id="@+id/appBarDimmer"
@@ -39,6 +50,14 @@
             android:layout_height="match_parent"
             android:alpha="0.4"
             android:background="@android:color/black" />
+
+        <View
+            android:id="@+id/appBarFullDimmer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.0"
+            android:background="@android:color/black"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/textView"
@@ -55,14 +74,20 @@
     <no.danielzeller.blurbehindlib.BlurBehindLayout
         android:id="@+id/navigationBarBlurLayout"
         android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:background="@color/colorAccent"
-        android:elevation="12dp"
+        android:layout_height="@dimen/navigationbar_height"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:updateMode="onScroll"
-        app:useTextureView="false">
+        app:useTextureView="false"
+        app:blurRadius = "100.0">
 
+        <View
+            android:id="@+id/navigationBarFullDimmer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.0"
+            android:background="@android:color/black"
+            android:visibility="gone" />
     </no.danielzeller.blurbehindlib.BlurBehindLayout>
 </android.support.constraint.ConstraintLayout>

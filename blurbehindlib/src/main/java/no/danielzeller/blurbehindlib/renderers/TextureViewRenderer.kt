@@ -65,8 +65,6 @@ class TextureViewRenderer(val context: Context, internal val scale: Float) : Tex
         fun update() {
 
             if (eglDisplay != null) {
-                val brah = (EGLContext.getEGL() as EGL10).eglGetCurrentContext()
-
                 egl!!.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
 
                 GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)

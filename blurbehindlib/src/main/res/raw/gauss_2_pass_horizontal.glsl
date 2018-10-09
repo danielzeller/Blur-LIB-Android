@@ -25,6 +25,7 @@ void main() {
     flippedYUV.y=1.0-flippedYUV.y;
 
     int step = int(float( blurRadius/15)*scale)+1;
+
     for(int i = 0; i < diameter; i+=step) {
        vec2 offset = vec2(float(i - blurRadius) * uWidthOffset,  float(i - blurRadius) * uHeightOffset);
        sampleTex = vec3(texture2D(u_TextureUnit, flippedYUV.st+offset));
