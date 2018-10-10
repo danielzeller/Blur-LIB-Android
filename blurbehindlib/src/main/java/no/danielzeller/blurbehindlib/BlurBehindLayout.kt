@@ -118,8 +118,6 @@ class BlurBehindLayout : FrameLayout {
         glSurfaceView.setEGLContextClientVersion(2)
         glSurfaceView.setZOrderMediaOverlay(true)
         addView(glSurfaceView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
-        glSurfaceView.translationX = 100000f
-        Handler().postDelayed({ glSurfaceView.translationX = 0f }, 100)
         var openglGLRenderer = GLSurfaceViewRenderer(context, 0.3f)
         glSurfaceView.setRenderer(openglGLRenderer)
         glSurfaceView.renderMode = RENDERMODE_WHEN_DIRTY

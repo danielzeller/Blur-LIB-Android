@@ -24,6 +24,7 @@ import android.support.constraint.ConstraintSet
 import android.view.animation.PathInterpolator
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_details.*
+import no.danielzeller.blurbehind.extensions.onEnd
 import no.danielzeller.blurbehindlib.UpdateMode
 
 
@@ -158,24 +159,7 @@ class DetailsFragment : Fragment() {
         }
         anim.interpolator = moveInterpolator
         anim.start()
-//        val drawStuff = DrawStuff(context, movePath)
-//        drawStuff.id = R.id.action_mode_bar_stub
-//        (activity?.window?.decorView as ViewGroup).addView(drawStuff, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
     }
-
-    internal class DrawStuff(context: Context?, val movePath: Path) : View(context) {
-        override fun onDraw(canvas: Canvas?) {
-            super.onDraw(canvas)
-            canvas?.drawColor(Color.BLUE)
-            val p = Paint()
-            p.color = Color.RED
-            p.strokeWidth = 8f
-            p.style = Paint.Style.STROKE
-            canvas?.drawPath(movePath, p)
-            invalidate()
-        }
-    }
-
 
     fun animateCornerRadius() {
         var cardRadius = ValueAnimator.ofFloat(cardView.radius, 0f).setDuration(MOVE_DURATION / 2)

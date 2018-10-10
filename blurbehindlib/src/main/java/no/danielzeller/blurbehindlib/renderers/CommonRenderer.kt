@@ -73,12 +73,12 @@ class CommonRenderer(private val context: Context, internal val scale: Float) {
     }
 
     internal fun onDrawFrame() {
-        if (blurRadius != 0f) {
+
             surfaceTexture.updateTexture()
             blurPass(renderTextureHorizontal, gauss2PassHorizontal, false, surfaceTexture.getTextureID())
             blurPass(renderTextureVertical, gauss2PassVertical, true, renderTextureHorizontal.fboTex)
             renderFullscreenTexture()
-        }
+
     }
 
     fun renderFullscreenTexture() {
