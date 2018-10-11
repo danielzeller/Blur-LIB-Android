@@ -47,7 +47,7 @@ class DetailsFragment : Fragment() {
         setupBlurViews(rootView, viewToBlur)
         cardTransitionHelper = CardTransitionHelper(cardViewRoot, viewToBlur.recyclerView, rootView.textContainer)
         cardTransitionHelper.animateCardIn()
-        cardTransitionHelper.fadeInBlur(rootView.fullscreenBlur, rootView.fullscreenDimmer, rootView.textBlur)
+        cardTransitionHelper.fadeInBlur(rootView.fullscreenBlur, rootView.fullscreenDimmer)
         cardTransitionHelper.fadeOutTopAndBottomBlurViews(activity)
         return rootView
     }
@@ -71,7 +71,6 @@ class DetailsFragment : Fragment() {
     private fun setupBlurViews(rootView: View, viewToBlur: ViewGroup) {
         rootView.fullscreenBlur.viewBehind = viewToBlur
         rootView.fullscreenBlur.updateForMilliSeconds(MOVE_DURATION)
-        rootView.textBlur.viewBehind = rootView.textBlurBehindContainer
     }
 
     private fun onExitAnimationComplete() {

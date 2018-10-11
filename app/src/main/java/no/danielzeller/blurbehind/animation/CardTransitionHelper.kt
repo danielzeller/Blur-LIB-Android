@@ -28,7 +28,6 @@ private const val FADE_TEXT_DURATION = 300L
 const val FADE_BARS_DURATION = 100L
 const val MOVE_DURATION = 600L
 const val TARGET_BLUR_RADIUS = 30f
-const val TARGET_TEXT_BLUR_RADIUS = 120f
 const val BACKGROUND_VIEWS_SCALED_DOWN_SIZE = 0.9f
 
 val moveInterpolator = PathInterpolator(.52f, 0f, .18f, 1f)
@@ -90,20 +89,10 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
     }
 
     private fun animateTextContainer() {
-        ObjectAnimator.ofFloat(textContainer, View.ALPHA, textContainer.alpha, 1f).setDuration(MOVE_DURATION).start(runningAnimations)
+        ObjectAnimator.ofFloat(textContainer, View.ALPHA, textContainer.alpha, 1f).setDuration((MOVE_DURATION * 0.5f).toLong()).delay((MOVE_DURATION * 0.75f).toLong()).start(runningAnimations)
         textContainer.translationY = targetSize.y + cardRootView.resources.getDimension(R.dimen.topbar_height)
-        ObjectAnimator.ofFloat(textContainer, View.SCALE_X, 2f, 1f).setDuration(MOVE_DURATION).interpolate(scaleInterpolator).start(runningAnimations)
-        ObjectAnimator.ofFloat(textContainer, View.SCALE_Y, 2f, 1f).setDuration(MOVE_DURATION).interpolate(scaleInterpolator).start(runningAnimations)
-
-        val textBlur = textContainer.textBlur
-        ValueAnimator.ofFloat(TARGET_TEXT_BLUR_RADIUS, 0f).setDuration((MOVE_DURATION).toLong())
-                .onUpdate { value ->
-                    textBlur.blurRadius = value as Float
-                    textBlur.updateForMilliSeconds(16)
-                }.onEnd {
-                    textBlur.viewBehind?.visibility = View.VISIBLE
-                    textBlur.disable()
-                }.interpolate(LinearInterpolator()).start(runningAnimations)
+        ObjectAnimator.ofFloat(textContainer, View.SCALE_X, 1.5f, 1f).setDuration(MOVE_DURATION).delay((MOVE_DURATION * 0.25f).toLong()).interpolate(scaleInterpolator).start(runningAnimations)
+        ObjectAnimator.ofFloat(textContainer, View.SCALE_Y, 1.5f, 1f).setDuration(MOVE_DURATION).delay((MOVE_DURATION * 0.25f).toLong()).interpolate(scaleInterpolator).start(runningAnimations)
     }
 
     fun animateCardOut() {
@@ -124,7 +113,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
         runningAnimations.clear()
     }
 
-    fun fadeInBlur(blurView: BlurBehindLayout, blurDimmer: View, textBlur: BlurBehindLayout) {
+    fun fadeInBlur(blurView: BlurBehindLayout, blurDimmer: View) {
         ValueAnimator.ofFloat(0f, TARGET_BLUR_RADIUS).setDuration(MOVE_DURATION - FADE_BARS_DURATION)
                 .interpolate(scaleInterpolator).delay(FADE_BARS_DURATION).onUpdate { value ->
                     blurView.blurRadius = value as Float

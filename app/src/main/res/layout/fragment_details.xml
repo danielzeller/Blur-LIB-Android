@@ -26,22 +26,14 @@
         android:alpha="0"
         android:background="@color/dark_grey" />
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textContainer"
-        android:alpha="0">
 
         <LinearLayout
-            android:id="@+id/textBlurBehindContainer"
-            android:layout_width="0dp"
+            android:id="@+id/textContainer"
+            android:alpha="0"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="@dimen/grid_item_horizontal_space"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:visibility="invisible">
+            android:paddingTop="@dimen/grid_item_horizontal_space"  >
 
             <TextView
                 android:id="@+id/detailsHeading"
@@ -79,20 +71,7 @@
                 android:textSize="14sp" />
         </LinearLayout>
 
-        <no.danielzeller.blurbehindlib.BlurBehindLayout
-            android:id="@+id/textBlur"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:blurRadius="120"
-            app:blurTextureScale="0.3"
-            app:layout_constraintBottom_toBottomOf="@id/textBlurBehindContainer"
-            app:layout_constraintEnd_toEndOf="@id/textBlurBehindContainer"
-            app:layout_constraintStart_toStartOf="@id/textBlurBehindContainer"
-            app:layout_constraintTop_toTopOf="@id/textBlurBehindContainer"
-            app:updateMode="manually"
-            app:useTextureView="true" />
 
-    </android.support.constraint.ConstraintLayout>
 
 
 </FrameLayout>
