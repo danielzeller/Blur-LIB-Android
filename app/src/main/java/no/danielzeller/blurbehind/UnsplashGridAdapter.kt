@@ -1,5 +1,6 @@
 package no.danielzeller.blurbehind
 
+import android.animation.ObjectAnimator
 import android.graphics.Bitmap
 import android.graphics.drawable.Animatable
 import android.support.v4.app.FragmentManager
@@ -10,17 +11,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.card2.view.*
 import kotlinx.android.synthetic.main.loader_view.view.*
+import no.danielzeller.blurbehind.animation.ParallaxImageView
+import no.danielzeller.blurbehind.extensions.delay
+import no.danielzeller.blurbehind.extensions.onEnd
 import no.danielzeller.blurbehind.model.UnsplashItem
 import java.lang.Exception
 import java.lang.ref.WeakReference
 
 
-class UnsplashGridAdapter(val items: List<UnsplashItem>, val supportFragmentManager: FragmentManager) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    private val picasso: Picasso = Picasso.get()
+class UnsplashGridAdapter(val items: List<UnsplashItem>, val supportFragmentManager: FragmentManager, val viewModel: UnsplashViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -65,12 +66,27 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, val supportFragmentMana
     }
 
     fun setupImageView(viewHolder: CardViewHolder, item: UnsplashItem) {
-        viewHolder.progressBar.visibility = View.VISIBLE
+
         (viewHolder.progressBarImage.drawable as Animatable).start()
+
+        val bitmap = viewModel.picassoCache.get(item.imageUrl + "\n")
+        if (bitmap == null) {
+            loadImage(viewHolder, item)
+        } else {
+            viewHolder.image.setImageBitmap(bitmap)
+        }
+    }
+
+    private fun loadImage(viewHolder: CardViewHolder, item: UnsplashItem) {
         var loaderRef = WeakReference<View>(viewHolder.progressBar)
-        picasso.load(item.imageUrl).fit().centerInside().config(Bitmap.Config.HARDWARE).into(viewHolder.image, object : Callback {
+        var imageRef = WeakReference<ParallaxImageView>(viewHolder.image)
+        viewHolder.progressBar.visibility = View.VISIBLE
+        viewModel.picasso.load(item.imageUrl).config(Bitmap.Config.HARDWARE).into(viewHolder.image, object : Callback {
             override fun onSuccess() {
-                loaderRef.get()?.visibility = View.GONE
+                if (loaderRef.get() != null) {
+                    ObjectAnimator.ofFloat(loaderRef.get(), View.ALPHA, 1f, 0f).delay(50).setDuration(450).onEnd { loaderRef.get()?.visibility = View.GONE }.start()
+                    imageRef.get()?.introAnimate()
+                }
             }
 
             override fun onError(e: Exception?) {
@@ -88,7 +104,7 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, val supportFragmentMana
     }
 
     open inner class CardViewHolder : RecyclerView.ViewHolder {
-        val image: ImageView
+        val image: ParallaxImageView
         val heading: TextView
         val progressBar: View
         val progressBarImage: ImageView

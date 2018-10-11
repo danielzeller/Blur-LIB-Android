@@ -13,8 +13,6 @@ class GLSurfaceViewRenderer : Renderer {
     override fun onSurfaceCreated(glUnused: GL10, config: EGLConfig) {
         clearView()
         commonRenderer.onSurfaceCreated()
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST)
-        GLES20.glDisable(GLES20.GL_BLEND)
     }
 
     override fun onSurfaceChanged(glUnused: GL10, width: Int, height: Int) {

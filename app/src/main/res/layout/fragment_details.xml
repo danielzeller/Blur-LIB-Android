@@ -17,7 +17,7 @@
         app:blurRadius="0"
         app:blurTextureScale="0.3"
         app:updateMode="manually"
-        app:useTextureView="false"/>
+        app:useTextureView="false" />
 
     <View
         android:id="@+id/fullscreenDimmer"
@@ -27,51 +27,47 @@
         android:background="@color/dark_grey" />
 
 
-        <LinearLayout
-            android:id="@+id/textContainer"
-            android:alpha="0"
+    <LinearLayout
+        android:id="@+id/textContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:layerType="hardware"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/grid_item_horizontal_space">
+
+        <TextView
+            android:id="@+id/detailsHeading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/grid_item_horizontal_space"  >
+            android:fontFamily="sans-serif-condensed"
+            android:padding="@dimen/grid_item_horizontal_space"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/medium_heading_size"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/detailsHeading"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-condensed"
-                android:padding="@dimen/grid_item_horizontal_space"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/medium_heading_size"
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/authorText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:autoLink="all"
+            android:drawableStart="@drawable/ic_author"
+            android:drawablePadding="@dimen/grid_item_horizontal_space"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center_vertical|start"
+            android:linksClickable="true"
+            android:paddingHorizontal="@dimen/grid_item_horizontal_space"
+            android:text="@string/author_text"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/small_text_size" />
 
-            <TextView
-                android:id="@+id/authorText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:autoLink="all"
-                android:drawableStart="@drawable/ic_author"
-                android:drawablePadding="@dimen/grid_item_horizontal_space"
-                android:fontFamily="sans-serif-light"
-                android:gravity="center_vertical|start"
-                android:linksClickable="true"
-                android:paddingHorizontal="@dimen/grid_item_horizontal_space"
-                android:text="@string/author_text"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/small_text_size" />
-
-            <TextView
-                android:id="@+id/detailsArticleContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/grid_item_horizontal_space"
-                android:fontFamily="sans-serif-light"
-                android:text="@string/app_name"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-
-
-
+        <TextView
+            android:id="@+id/detailsArticleContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/grid_item_horizontal_space"
+            android:fontFamily="sans-serif-light"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+    </LinearLayout>
 </FrameLayout>

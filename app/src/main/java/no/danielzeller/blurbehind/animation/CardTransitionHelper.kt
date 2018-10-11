@@ -26,8 +26,8 @@ import no.danielzeller.blurbehindlib.BlurBehindLayout
 
 private const val FADE_TEXT_DURATION = 300L
 const val FADE_BARS_DURATION = 100L
-const val MOVE_DURATION = 600L
-const val TARGET_BLUR_RADIUS = 30f
+const val MOVE_DURATION = 700L
+const val TARGET_BLUR_RADIUS = 40f
 const val BACKGROUND_VIEWS_SCALED_DOWN_SIZE = 0.9f
 
 val moveInterpolator = PathInterpolator(.52f, 0f, .18f, 1f)
@@ -88,11 +88,10 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
         })
     }
 
+    var textContainerOffset = 0f
     private fun animateTextContainer() {
-        ObjectAnimator.ofFloat(textContainer, View.ALPHA, textContainer.alpha, 1f).setDuration((MOVE_DURATION * 0.5f).toLong()).delay((MOVE_DURATION * 0.75f).toLong()).start(runningAnimations)
-        textContainer.translationY = targetSize.y + cardRootView.resources.getDimension(R.dimen.topbar_height)
-        ObjectAnimator.ofFloat(textContainer, View.SCALE_X, 1.5f, 1f).setDuration(MOVE_DURATION).delay((MOVE_DURATION * 0.25f).toLong()).interpolate(scaleInterpolator).start(runningAnimations)
-        ObjectAnimator.ofFloat(textContainer, View.SCALE_Y, 1.5f, 1f).setDuration(MOVE_DURATION).delay((MOVE_DURATION * 0.25f).toLong()).interpolate(scaleInterpolator).start(runningAnimations)
+        ObjectAnimator.ofFloat(textContainer, View.ALPHA, textContainer.alpha, 1f).setDuration((MOVE_DURATION *0.6f).toLong()).delay((MOVE_DURATION *0.4f).toLong()).interpolate(moveInterpolator).start(runningAnimations)
+        ValueAnimator.ofFloat(-textContainer.height.toFloat(), 0f).setDuration(MOVE_DURATION).interpolate(moveInterpolator).onUpdate { anim -> textContainerOffset = anim as Float }.start(runningAnimations)
     }
 
     fun animateCardOut() {
@@ -224,6 +223,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
                     params.width = size.x.toInt()
                     params.height = size.y.toInt()
                     cardRootView.layoutParams = params
+                    textContainer.translationY = textContainerOffset + cardRootView.bottom
                 }.start(runningAnimations)
     }
 

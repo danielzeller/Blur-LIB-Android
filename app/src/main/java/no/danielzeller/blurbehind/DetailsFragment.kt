@@ -1,5 +1,6 @@
 package no.danielzeller.blurbehind
 
+import android.arch.lifecycle.ViewModelProviders
 import android.graphics.*
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
@@ -11,7 +12,6 @@ import android.widget.FrameLayout
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.card2.view.*
 import kotlinx.android.synthetic.main.fragment_details.view.*
-import kotlinx.android.synthetic.main.loader_view.view.*
 import no.danielzeller.blurbehind.model.UnsplashItem
 import kotlinx.android.synthetic.main.activity_main.view.*
 import no.danielzeller.blurbehind.animation.CardTransitionHelper
@@ -58,14 +58,27 @@ class DetailsFragment : Fragment() {
         layoutParams.leftMargin = originViewScreenPos.left
         layoutParams.topMargin = originViewScreenPos.top
         rootView.addView(cardRootView, layoutParams)
-        cardRootView.progressView.visibility = View.GONE
         cardRootView.heading.text = unsplashItem.heading
         cardRootView.subHeading?.text = unsplashItem.subHeading
         rootView.detailsArticleContent.text = unsplashItem.articleContent
         rootView.detailsHeading.text = unsplashItem.heading
-        Picasso.get().load(unsplashItem.imageUrl).fit().centerInside().into(cardRootView.image)
+        getBitmap(cardRootView)
 
         return cardRootView
+    }
+
+    private fun getBitmap(cardRootView: ConstraintLayout) {
+        val model = activity?.run {
+            ViewModelProviders.of(this).get(UnsplashViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+
+        val picassoCache = model.picassoCache
+        val bitmap = picassoCache.get(unsplashItem.imageUrl + "\n")
+        if (bitmap != null) {
+            cardRootView.image.setImageBitmap(bitmap)
+        } else {
+            model.picasso.load(unsplashItem.imageUrl).fit().into(cardRootView.image)
+        }
     }
 
     private fun setupBlurViews(rootView: View, viewToBlur: ViewGroup) {
@@ -93,10 +106,7 @@ class DetailsFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * @param clickedView ClickedView.
-         * @return A new instance of fragment DetailsFragment.
-         */
+
         @JvmStatic
         fun newInstance(clickedView: View, unsplashItem: UnsplashItem) =
                 DetailsFragment().apply {
