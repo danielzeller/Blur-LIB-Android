@@ -7,37 +7,40 @@ import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLES30
 import android.opengl.Matrix
-import android.util.Log
 import no.danielzeller.blurbehindlib.*
-import no.opengl.danielzeller.opengltesting.opengl.gameobject.RenderTexture
+import no.danielzeller.blurbehindlib.opengl.RenderTexture
+import no.danielzeller.blurbehindlib.opengl.ShaderProgram
+import no.danielzeller.blurbehindlib.opengl.SpriteMesh
+import no.danielzeller.blurbehindlib.opengl.TextureShaderProgram
+
+private const val PADDING_TOP = 50f
 
 class CommonRenderer(private val context: Context, internal val scale: Float) {
 
-    private val projectionMatrixOrtho = FloatArray(16)
-    private lateinit var spriteMesh: SpriteMesh
-    private val fullscreenTextureShader = TextureShaderProgram(R.raw.vertex_shader, R.raw.texture_fragment_shader)
-
-    private val gauss2PassHorizontal = TextureShaderProgram(R.raw.vertex_shader, R.raw.gauss_2_pass_horizontal)
-    private val gauss2PassVertical = TextureShaderProgram(R.raw.vertex_shader, R.raw.gauss_2_pass_vertical)
-
     var surfaceTexture = ViewSurfaceTexture()
     var isCreated = false
+    var blurRadius = 40f
+    var paddingTop = 0f
 
-    private var width = 0
-    private var height = 0
+    private val projectionMatrixOrtho = FloatArray(16)
+    private lateinit var spriteMesh: SpriteMesh
+
+    private val fullscreenTextureShader = TextureShaderProgram(R.raw.vertex_shader, R.raw.texture_fragment_shader)
+    private val gauss2PassHorizontal = TextureShaderProgram(R.raw.vertex_shader, R.raw.gauss_2_pass_horizontal)
+    private val gauss2PassVertical = TextureShaderProgram(R.raw.vertex_shader, R.raw.gauss_2_pass_vertical)
     private var renderTextureHorizontal = RenderTexture()
     private var renderTextureVertical = RenderTexture()
 
-    var blurRadius = 40f
-    var paddingTop = 0f
+    private var width = 0
+    private var height = 0
 
     fun onSurfaceCreated() {
 
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
         spriteMesh = SpriteMesh()
         fullscreenTextureShader.load(context)
-
         gauss2PassHorizontal.load(context)
         gauss2PassVertical.load(context)
     }
@@ -45,9 +48,9 @@ class CommonRenderer(private val context: Context, internal val scale: Float) {
     fun onSurfaceChanged(width: Int, height: Int) {
         this.width = width
         this.height = height
-        paddingTop = 50f * context.resources.displayMetrics.density
-        renderTextureHorizontal.InitiateFrameBuffer((width * scale).toInt(), ((height + paddingTop) * scale).toInt())
-        renderTextureVertical.InitiateFrameBuffer((width * scale).toInt(), ((height + paddingTop) * scale).toInt())
+        paddingTop = PADDING_TOP * context.resources.displayMetrics.density
+        renderTextureHorizontal.initiateFrameBuffer((width * scale).toInt(), ((height + paddingTop) * scale).toInt())
+        renderTextureVertical.initiateFrameBuffer((width * scale).toInt(), ((height + paddingTop) * scale).toInt())
         surfaceTexture.createSurface((width * scale).toInt(), ((height + paddingTop) * scale).toInt())
         clearViewSurfaceTexture()
         isCreated = true
@@ -74,14 +77,13 @@ class CommonRenderer(private val context: Context, internal val scale: Float) {
 
     internal fun onDrawFrame() {
 
-            surfaceTexture.updateTexture()
-            blurPass(renderTextureHorizontal, gauss2PassHorizontal, false, surfaceTexture.getTextureID())
-            blurPass(renderTextureVertical, gauss2PassVertical, true, renderTextureHorizontal.fboTex)
-            renderFullscreenTexture()
-
+        surfaceTexture.updateTexture()
+        blurPass(renderTextureHorizontal, gauss2PassHorizontal, false, surfaceTexture.getTextureID())
+        blurPass(renderTextureVertical, gauss2PassVertical, true, renderTextureHorizontal.fboTex)
+        renderFullscreenTexture()
     }
 
-    fun renderFullscreenTexture() {
+    private fun renderFullscreenTexture() {
         setupViewPort(width, height, paddingTop)
         fullscreenTextureShader.useProgram()
         GLES20.glUniformMatrix4fv(GLES20.glGetUniformLocation(fullscreenTextureShader.program, ShaderProgram.U_MATRIX), 1, false, projectionMatrixOrtho, 0)
@@ -94,7 +96,7 @@ class CommonRenderer(private val context: Context, internal val scale: Float) {
     }
 
 
-    fun blurPass(renderTexture: RenderTexture, blurShader: TextureShaderProgram, isVerticalPass: Boolean, bindTextureID: Int) {
+    private fun blurPass(renderTexture: RenderTexture, blurShader: TextureShaderProgram, isVerticalPass: Boolean, bindTextureID: Int) {
         setupViewPort((width * scale).toInt(), ((height + paddingTop) * scale).toInt(), 0f)
         renderTexture.bindRenderTexture()
         blurShader.useProgram()
@@ -118,10 +120,19 @@ class CommonRenderer(private val context: Context, internal val scale: Float) {
         }
 
         GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "scale"), scale)
-        GLES20.glUniform1i(GLES20.glGetUniformLocation(blurShader.program, "blurRadius"), (blurRadius*scale).toInt())
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(blurShader.program, "blurRadius"), (blurRadius * scale).toInt())
 
         spriteMesh.bindData(blurShader)
         spriteMesh.draw()
         renderTexture.unbindRenderTexture()
+    }
+
+    fun destroyResources() {
+        GLES20.glDeleteProgram(fullscreenTextureShader.program)
+        GLES20.glDeleteProgram(gauss2PassHorizontal.program)
+        GLES20.glDeleteProgram(gauss2PassVertical.program)
+        surfaceTexture.releaseSurface()
+        renderTextureHorizontal.deleteAllTextures()
+        renderTextureVertical.deleteAllTextures()
     }
 }

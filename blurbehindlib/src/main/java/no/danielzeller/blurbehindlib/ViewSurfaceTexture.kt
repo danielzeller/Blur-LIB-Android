@@ -10,8 +10,8 @@ import android.view.Surface
 
 class ViewSurfaceTexture {
 
-    var textureWidth: Int = 0
-    var textureHeight: Int = 0
+    private var textureWidth: Int = 0
+    private var textureHeight: Int = 0
 
     private var surfaceTexture: SurfaceTexture? = null
     private var surface: Surface? = null
@@ -29,7 +29,6 @@ class ViewSurfaceTexture {
                 surfaceTexture!!.setDefaultBufferSize(textureWidth, textureHeight)
                 surface = Surface(surfaceTexture)
             }
-
     }
 
     fun updateTexture() {

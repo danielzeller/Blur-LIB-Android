@@ -51,11 +51,11 @@ class MainActivity : AppCompatActivity() {
         val cardsLayouts = intArrayOf(R.layout.card2, R.layout.card3, R.layout.card4, R.layout.card4)
         val headings = resources.getStringArray(R.array.headings)
         val subHeadings = resources.getStringArray(R.array.sub_headings)
-
+        val articleContent = resources.getStringArray(R.array.articles_content)
         var cardTypeIndex = 0
 
         for (i in 0 until CARDS_COUNT) {
-            items.add(UnsplashItem(UNSPLASH_RANDOM_URL + i, headings[i], subHeadings[i], cardsLayouts[cardTypeIndex]))
+            items.add(UnsplashItem(UNSPLASH_RANDOM_URL + i, headings[i], subHeadings[i], cardsLayouts[cardTypeIndex], articleContent[i]))
 
             cardTypeIndex += 1
             if (cardTypeIndex == cardsLayouts.size) cardTypeIndex = 0

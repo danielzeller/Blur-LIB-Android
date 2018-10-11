@@ -40,9 +40,8 @@
             android:fontFamily="sans-serif-condensed"
             android:gravity="center"
             android:paddingBottom="15dp"
-            android:text="I'M A HEADING"
             android:textColor="@android:color/white"
-            android:textSize="24dp"
+            android:textSize="@dimen/medium_heading_size"
             android:textStyle="bold" />
 
         <TextView

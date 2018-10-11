@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Blur Behind</string>
+    <string name="app_name">Blur Demo</string>
 
 
     <string-array name="headings">
@@ -37,7 +37,23 @@
         <item>Me too</item>
         <item>Woouoo</item>
     </string-array>
+    <string-array name="articles_content">
+        <item>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</item>
+        <item>Germany is planning a gexit</item>
+        <item>I\'m a heading</item>
+        <item>Merkeler has a new hobby</item>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+        <item>Stump says geese are no longer wanted in the U.S</item>
+        <item>Denmark is building a canal</item>
+        <item>New York needs more coffe</item>
+        <item>Google is selling Android</item>
+
+        <item>It\'s finally hip to strip?</item>
+        <item>Well I\'m certainly a heading</item>
+        <item>Me too</item>
+        <item>Woouoo</item>
+    </string-array>
+
+    <string name="author_text">By <a href="https://danielzeller.no">Daniel Zeller</a> on Oct 122, 2018, 6:00am EDT</string>
 </resources>

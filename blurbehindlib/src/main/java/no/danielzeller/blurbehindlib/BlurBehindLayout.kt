@@ -2,14 +2,11 @@ package no.danielzeller.blurbehindlib
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.PixelFormat
 import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.opengl.GLSurfaceView
 import android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY
-import android.os.Handler
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Choreographer
 import android.view.TextureView
 import android.view.View
@@ -18,20 +15,40 @@ import android.widget.FrameLayout
 import no.danielzeller.blurbehindlib.renderers.CommonRenderer
 import no.danielzeller.blurbehindlib.renderers.GLSurfaceViewRenderer
 import no.danielzeller.blurbehindlib.renderers.TextureViewRenderer
-import no.opengl.danielzeller.opengltesting.opengl.util.FrameRateCounter
+import android.view.ViewGroup
+import java.lang.IllegalStateException
+
 
 enum class UpdateMode {
-    CONTINOUSLY, ON_SCROLL, MANUALLY
+    CONTINUOUSLY, ON_SCROLL, MANUALLY
 }
 
 class BlurBehindLayout : FrameLayout {
 
+
+    /**
+     *  The View behind the BlurBehindLayout, that is to be Blurred.
+     */
     var viewBehind: View? = null
         set(value) {
+            checkParent(value)
             field = value
         }
 
-    var updateMode = UpdateMode.CONTINOUSLY
+
+    /**
+     * Set the update mode. When updateMode is
+     * UpdateMode.CONTINUOUSLY, the renderer is called
+     * repeatedly to re-render the scene. When updateMode
+     * is UpdateMode.ON_SCROLL, the renderer only renders
+     * when a View is Scrolled.
+     * When updateMode is UpdateMode.MANUALLY, the renderer only renders when the surface is created
+     * and when updateForMilliSeconds(..) is called manually.
+     *
+     * @param updateMode one of the UpdateMode enums
+     * @see #UpdateMode
+     */
+    var updateMode = UpdateMode.CONTINUOUSLY
         set(value) {
             viewTreeObserver.removeOnScrollChangedListener(onScrollChangesListener)
             if (value == UpdateMode.ON_SCROLL) {
@@ -40,6 +57,10 @@ class BlurBehindLayout : FrameLayout {
             field = value
         }
 
+
+    /**
+     *  The blur radius. Higher value will give a stronger blur. 0f = no blur.
+     */
     var blurRadius = 40f
         set(value) {
 
@@ -47,7 +68,6 @@ class BlurBehindLayout : FrameLayout {
             field = value
         }
 
-    var currentFPS = 0f
 
     private val viewBehindRect = Rect()
     private val thisViewRect = Rect()
@@ -70,10 +90,47 @@ class BlurBehindLayout : FrameLayout {
         initView(context)
     }
 
+
+    /**
+     *  This will udate the View for the given time in milliseconds. Useful for when updateMode
+     *  is UpdateMode.ON_SCOLL or UpdateMode.MANUALLY. This can be can be used if there is some
+     *  animation or update running in the background.
+     *  @param milliSeconds How long should the View update for.
+     */
     fun updateForMilliSeconds(milliSeconds: Long) {
         updateViewUntil = System.currentTimeMillis() + milliSeconds
         Choreographer.getInstance().removeFrameCallback(frameCallBack)
         Choreographer.getInstance().postFrameCallback(frameCallBack)
+    }
+
+    /**
+     * Disables the blur View. Useful for when the BlurView is used in animations.
+     * Setting Visibility = View.GONE on a SurfaceView will cause a black flicker in
+     * some occasions. Using this method disables the blurView updates and hodes it from the
+     * screen without any flicker issues.
+     */
+    fun disable() {
+        Choreographer.getInstance().removeFrameCallback(frameCallBack)
+        viewTreeObserver.removeOnScrollChangedListener(onScrollChangesListener)
+        //Setting visibility=GONE causes a black flicker since the SurfaceView rendering
+        //and View rendering is'nt 1-1 synced. Setting translation off the screen removes the flicker.
+        //The View is'nt updated anyways since we only do a render in the frameCallBack
+        renderView.translationX = 100000f
+        isBlurDisabled = true
+    }
+
+    /**
+     * Enables the blur View again. Should only be called if  disable() has been called first.
+     */
+    fun enable() {
+        if (isBlurDisabled) {
+            if (updateMode == UpdateMode.ON_SCROLL) {
+                addOnScrollListener()
+            }
+            renderView.translationX = 0f
+            isBlurDisabled = false
+            updateForMilliSeconds(10)
+        }
     }
 
     private fun initView(context: Context) {
@@ -107,28 +164,29 @@ class BlurBehindLayout : FrameLayout {
         viewTreeObserver.addOnScrollChangedListener(onScrollChangesListener)
     }
 
-    private val onScrollChangesListener = object : ViewTreeObserver.OnScrollChangedListener {
-        override fun onScrollChanged() {
-            updateForMilliSeconds(200)
-        }
-    }
+    private val onScrollChangesListener = ViewTreeObserver.OnScrollChangedListener { updateForMilliSeconds(200) }
 
     private fun createGLSurfaceView(context: Context) {
-        var glSurfaceView = GLSurfaceView(context)
+        val openGLRenderer = GLSurfaceViewRenderer()
+
+        val glSurfaceView = GLSurfaceView(context)
         glSurfaceView.setEGLContextClientVersion(2)
         glSurfaceView.setZOrderMediaOverlay(true)
-        addView(glSurfaceView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
-        var openglGLRenderer = GLSurfaceViewRenderer(context, 0.3f)
-        glSurfaceView.setRenderer(openglGLRenderer)
+        glSurfaceView.setRenderer(openGLRenderer)
         glSurfaceView.renderMode = RENDERMODE_WHEN_DIRTY
-        openglGLRenderer.commonRenderer = commonRenderer!!
+
+        addView(glSurfaceView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+        openGLRenderer.commonRenderer = commonRenderer!!
+
         renderView = glSurfaceView
     }
 
     private fun createTextureView(context: Context) {
-        var textureView = TextureView(context)
-        textureViewRenderer = TextureViewRenderer(context, 0.3f)
+        textureViewRenderer = TextureViewRenderer(context)
+
+        val textureView = TextureView(context)
         textureView.surfaceTextureListener = textureViewRenderer
+
         addView(textureView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
         textureViewRenderer.commonRenderer = commonRenderer!!
         renderView = textureView
@@ -137,54 +195,54 @@ class BlurBehindLayout : FrameLayout {
     private fun redrawBlurTexture() {
         if (commonRenderer!!.isCreated && renderView.visibility == View.VISIBLE) {
             renderBehindViewToTexture()
-            if (useTextureView) {
-                textureViewRenderer.update()
-            } else {
-                (renderView as GLSurfaceView).requestRender()
-
-            }
-            captureFPS()
+            updateRenderView()
         }
-        if (updateMode == UpdateMode.CONTINOUSLY || System.currentTimeMillis() < updateViewUntil) {
+        if (updateMode == UpdateMode.CONTINUOUSLY || System.currentTimeMillis() < updateViewUntil) {
             Choreographer.getInstance().postFrameCallback(frameCallBack)
         }
     }
 
-    var frameCallBack = Choreographer.FrameCallback {
+    private fun updateRenderView() {
+        if (useTextureView) {
+            textureViewRenderer.update()
+        } else {
+            (renderView as GLSurfaceView).requestRender()
+        }
+    }
+
+    private var frameCallBack = Choreographer.FrameCallback {
         redrawBlurTexture()
     }
 
     private fun renderBehindViewToTexture() {
         val commonRenderer = commonRenderer!!
+
         val glCanvas = commonRenderer.surfaceTexture.beginDraw()
+
         glCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         viewBehind?.getHitRect(viewBehindRect)
         getHitRect(thisViewRect)
+
         glCanvas?.scale(commonRenderer.scale, commonRenderer.scale)
         glCanvas?.translate((thisViewRect.left - viewBehindRect.left).toFloat(), (viewBehindRect.top - thisViewRect.top + commonRenderer.paddingTop * 0.5f))
-        visibility = View.INVISIBLE
+
         viewBehind?.draw(glCanvas)
-        visibility = View.VISIBLE
+
         commonRenderer.surfaceTexture.endDraw(glCanvas)
-
-    }
-
-    private fun captureFPS() {
-        FrameRateCounter.timeStep()
-        currentFPS = 1.0f / FrameRateCounter.deltaTime2
     }
 
     private fun convertIntToEnum(id: Int): UpdateMode {
         for (f in UpdateMode.values()) {
             if (f.ordinal == id) return f
         }
-        return UpdateMode.CONTINOUSLY
+        return UpdateMode.CONTINUOUSLY
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         Choreographer.getInstance().removeFrameCallback(frameCallBack)
         viewTreeObserver.removeOnScrollChangedListener(onScrollChangesListener)
+        commonRenderer?.destroyResources()
     }
 
     override fun onAttachedToWindow() {
@@ -192,24 +250,20 @@ class BlurBehindLayout : FrameLayout {
         updateForMilliSeconds(500)
     }
 
-    fun disable() {
-        Choreographer.getInstance().removeFrameCallback(frameCallBack)
-        viewTreeObserver.removeOnScrollChangedListener(onScrollChangesListener)
-        //Setting visibility=GONE causes a black flicker since the SurfaceView rendering
-        //and View rendering is'nt 1-1 synced. Setting translation off the screen removes the flicker.
-        //The View is'nt updated anyways since we only do a render in the frameCallBack
-        renderView.translationX = 100000f
-        isBlurDisabled = true
+    private fun checkParent(value: View?) {
+        if (value != null && value is ViewGroup) {
+            recursiveLoopChildren(value)
+        }
     }
 
-    fun enable() {
-        if (isBlurDisabled) {
-            if (updateMode == UpdateMode.ON_SCROLL) {
-                addOnScrollListener()
+    fun recursiveLoopChildren(parent: ViewGroup) {
+        for (i in 0 until parent.childCount) {
+            val child = parent.getChildAt(i)
+            if (child == this)
+                throw IllegalStateException("Blur Lib: The blurbehind view cannot be a parent of the BlurBehindLayout")
+            if (child is ViewGroup) {
+                recursiveLoopChildren(child)
             }
-            renderView.translationX = 0f
-            isBlurDisabled = false
-            updateForMilliSeconds(10)
         }
     }
 }

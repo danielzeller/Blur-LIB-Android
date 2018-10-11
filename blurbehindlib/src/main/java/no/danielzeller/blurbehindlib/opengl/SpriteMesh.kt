@@ -1,4 +1,4 @@
-package no.danielzeller.blurbehindlib
+package no.danielzeller.blurbehindlib.opengl
 
 import android.opengl.GLES20.GL_TRIANGLE_FAN
 import android.opengl.GLES20.glDrawArrays
@@ -35,7 +35,7 @@ class SpriteMesh {
         private const val BYTES_PER_FLOAT = 4
         private const val POSITION_COMPONENT_COUNT = 2
         private const val TEXTURE_COORDINATES_COMPONENT_COUNT = 2
-        private val STRIDE = (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT) * BYTES_PER_FLOAT
+        private const val STRIDE = (POSITION_COMPONENT_COUNT + TEXTURE_COORDINATES_COMPONENT_COUNT) * BYTES_PER_FLOAT
 
 
         val VERTEX_DATA = floatArrayOf(

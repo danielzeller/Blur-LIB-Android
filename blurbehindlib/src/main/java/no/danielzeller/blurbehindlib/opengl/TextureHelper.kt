@@ -1,4 +1,4 @@
-package no.opengl.danielzeller.opengltesting.opengl.util
+package no.danielzeller.blurbehindlib.opengl
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -19,7 +19,7 @@ import android.opengl.GLUtils.texImage2D
 
 object TextureHelper {
 
-    private val TAG = "TextureHelper"
+    private const val TAG = "TextureHelper"
 
     /**
      * Loads a texture from a resource ID, returning the OpenGL ID for that

@@ -1,5 +1,4 @@
-package no.danielzeller.blurbehindlib
-
+package no.danielzeller.blurbehindlib.opengl
 import android.content.Context
 import android.opengl.GLES20.glUseProgram
 

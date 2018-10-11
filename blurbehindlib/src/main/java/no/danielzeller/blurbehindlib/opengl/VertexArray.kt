@@ -1,4 +1,4 @@
-package no.danielzeller.blurbehindlib
+package no.danielzeller.blurbehindlib.opengl
 
 
 import android.opengl.GLES20.*
@@ -6,18 +6,15 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 
+private const val BYTES_PER_FLOAT = 4
+
 class VertexArray(vertexData: FloatArray) {
 
-    private val floatBuffer: FloatBuffer
-    private val BYTES_PER_FLOAT = 4
-
-    init {
-        floatBuffer = ByteBuffer
-                .allocateDirect(vertexData.size * BYTES_PER_FLOAT)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer()
-                .put(vertexData)
-    }
+    private val floatBuffer: FloatBuffer = ByteBuffer
+            .allocateDirect(vertexData.size * BYTES_PER_FLOAT)
+            .order(ByteOrder.nativeOrder())
+            .asFloatBuffer()
+            .put(vertexData)
 
     fun setVertexAttribPointer(dataOffset: Int, attributeLocation: Int, componentCount: Int, stride: Int) {
 

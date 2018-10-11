@@ -1,31 +1,21 @@
-package no.opengl.danielzeller.opengltesting.opengl.gameobject
+package no.danielzeller.blurbehindlib.opengl
 
 import android.opengl.GLES20
 import android.opengl.GLES20.*
-import android.opengl.Matrix.setIdentityM
 
 class RenderTexture {
 
-    internal var fboWidth = 512
-    internal var fboHeight = 512
+    private var fboWidth = 512
+    private var fboHeight = 512
 
-    var renderTextureID: Int = 0
+    private var renderTextureID: Int = 0
 
     internal var fboTex: Int = 0
-    internal var renderBufferId: Int = 0
-    var internalFormat = GL_RGBA
-    var format = GL_RGBA
+    private var renderBufferId: Int = 0
+    private var internalFormat = GL_RGBA
+    private var format = GL_RGBA
 
-
-    constructor(internalFormat: Int, format: Int) {
-
-        this.internalFormat = internalFormat
-        this.format = format
-    }
-
-    constructor()
-
-    fun InitiateFrameBuffer(width: Int, height: Int): Int {
+    fun initiateFrameBuffer(width: Int, height: Int): Int {
 
         fboWidth = width
         fboHeight = height

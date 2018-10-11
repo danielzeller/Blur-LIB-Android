@@ -4,14 +4,7 @@ import android.content.Context
 import android.graphics.SurfaceTexture
 import android.opengl.*
 import android.opengl.EGL14.EGL_OPENGL_ES2_BIT
-import android.opengl.GLES20.*
 import android.view.TextureView
-import no.danielzeller.blurbehindlib.R
-import no.danielzeller.blurbehindlib.ShaderProgram
-import no.danielzeller.blurbehindlib.SpriteMesh
-import no.danielzeller.blurbehindlib.TextureShaderProgram
-import no.opengl.danielzeller.opengltesting.opengl.gameobject.RenderTexture
-import java.nio.IntBuffer
 import javax.microedition.khronos.egl.*
 import javax.microedition.khronos.egl.EGL10.*
 import javax.microedition.khronos.egl.EGLConfig
@@ -20,34 +13,37 @@ import javax.microedition.khronos.egl.EGLDisplay
 import javax.microedition.khronos.egl.EGLSurface
 
 
-class TextureViewRenderer(val context: Context, internal val scale: Float) : TextureView.SurfaceTextureListener {
+class TextureViewRenderer(val context: Context) : TextureView.SurfaceTextureListener {
 
-    private lateinit var renderer: RendererThread
+    private lateinit var textureViewGLRenderer: TextureViewGLRenderer
     override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {}
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {}
 
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
-        renderer.destroy()
+        textureViewGLRenderer.isStopped = true
         return false
     }
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-        renderer = RendererThread(surface, width, height)
-        renderer.initGL()
+        textureViewGLRenderer = TextureViewGLRenderer(surface, width, height)
+        textureViewGLRenderer.start()
     }
 
     fun update() {
-        renderer.update()
+        textureViewGLRenderer.update = true
     }
 
     lateinit var commonRenderer: CommonRenderer
 
-    inner class RendererThread(private val surface: SurfaceTexture, private val width: Int, private val height: Int) {
+    inner class TextureViewGLRenderer(private val surface: SurfaceTexture, private val width: Int, private val height: Int) : Thread() {
 
-        var egl: EGL10? = null
-        var eglDisplay: EGLDisplay? = null
-        var eglContext: EGLContext? = null
-        var eglSurface: EGLSurface? = null
+        private var egl: EGL10? = null
+        private var eglDisplay: EGLDisplay? = null
+        private var eglContext: EGLContext? = null
+        private var eglSurface: EGLSurface? = null
+        var isStopped = false
+
+        var update = true
 
         fun initGL() {
             egl = EGLContext.getEGL() as EGL10
@@ -57,14 +53,15 @@ class TextureViewRenderer(val context: Context, internal val scale: Float) : Tex
             eglContext = egl!!.eglCreateContext(eglDisplay, eglConfig, EGL_NO_CONTEXT, intArrayOf(EGL14.EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE))
             eglSurface = egl!!.eglCreateWindowSurface(eglDisplay, eglConfig, surface, null)
 
-            update()
         }
 
-
-
-        fun update() {
-
-            if (eglDisplay != null) {
+        override fun run() {
+            super.run()
+            initGL()
+            while (!isStopped && egl?.eglGetError() == EGL_SUCCESS) {
+                while (!update) {
+                    Thread.sleep((1f / 90f * 1000f).toLong())
+                }
                 egl!!.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
 
                 GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
@@ -77,10 +74,13 @@ class TextureViewRenderer(val context: Context, internal val scale: Float) : Tex
                 commonRenderer.onDrawFrame()
 
                 egl!!.eglSwapBuffers(eglDisplay, eglSurface)
+                update = false
+                Thread.sleep((1f / 60f * 1000f).toLong())
             }
+            destroyResources()
         }
 
-        fun destroy() {
+        fun destroyResources() {
             surface.release()
             commonRenderer.surfaceTexture.releaseSurface()
             egl?.eglDestroyContext(eglDisplay, eglContext)

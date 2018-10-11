@@ -1,4 +1,4 @@
-package no.danielzeller.blurbehindlib
+package no.danielzeller.blurbehindlib.opengl
 
 import android.content.Context
 import android.content.res.Resources

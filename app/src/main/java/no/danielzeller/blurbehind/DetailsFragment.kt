@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.TextView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.card2.view.*
 import kotlinx.android.synthetic.main.fragment_details.view.*
@@ -45,10 +44,10 @@ class DetailsFragment : Fragment() {
         val viewToBlur = activity?.findViewById<View>(R.id.viewToBlur) as ViewGroup
 
         val cardViewRoot = createCardView(rootView as FrameLayout, inflater)
-        setupFullscreenBlurView(rootView, viewToBlur)
-        cardTransitionHelper = CardTransitionHelper(cardViewRoot, viewToBlur.recyclerView)
+        setupBlurViews(rootView, viewToBlur)
+        cardTransitionHelper = CardTransitionHelper(cardViewRoot, viewToBlur.recyclerView, rootView.textContainer)
         cardTransitionHelper.animateCardIn()
-        cardTransitionHelper.fadeInFullscreenBlur(rootView.fullscreenBlur, rootView.fullscreenDimmer)
+        cardTransitionHelper.fadeInBlur(rootView.fullscreenBlur, rootView.fullscreenDimmer, rootView.textBlur)
         cardTransitionHelper.fadeOutTopAndBottomBlurViews(activity)
         return rootView
     }
@@ -61,16 +60,18 @@ class DetailsFragment : Fragment() {
         rootView.addView(cardRootView, layoutParams)
         cardRootView.progressView.visibility = View.GONE
         cardRootView.heading.text = unsplashItem.heading
-        cardRootView.findViewById<TextView>(R.id.subHeading)?.text = unsplashItem.subHeading
-
+        cardRootView.subHeading?.text = unsplashItem.subHeading
+        rootView.detailsArticleContent.text = unsplashItem.articleContent
+        rootView.detailsHeading.text = unsplashItem.heading
         Picasso.get().load(unsplashItem.imageUrl).fit().centerInside().into(cardRootView.image)
 
         return cardRootView
     }
 
-    private fun setupFullscreenBlurView(rootView: View, viewToBlur: ViewGroup) {
+    private fun setupBlurViews(rootView: View, viewToBlur: ViewGroup) {
         rootView.fullscreenBlur.viewBehind = viewToBlur
         rootView.fullscreenBlur.updateForMilliSeconds(MOVE_DURATION)
+        rootView.textBlur.viewBehind = rootView.textBlurBehindContainer
     }
 
     private fun onExitAnimationComplete() {
