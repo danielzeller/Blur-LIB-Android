@@ -56,7 +56,7 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, val supportFragmentMana
 
     private fun setupOnClickListener(viewHolder: CardViewHolder, item: UnsplashItem) {
         viewHolder.itemView.setOnClickListener {
-            if (viewHolder.progressBar.visibility == View.GONE) {
+            if (viewHolder.progressBar.visibility != View.VISIBLE) {
                 val detailsFragment = DetailsFragment.newInstance(viewHolder.itemView, item)
                 supportFragmentManager.beginTransaction().add(R.id.overlayFragmentContainer, detailsFragment, DETAILS_FRAGMENT_TAG).commitNow()
                 viewHolder.itemView.visibility = View.INVISIBLE
