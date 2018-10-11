@@ -8,10 +8,7 @@ import android.opengl.GLES20
 import android.opengl.GLES30
 import android.opengl.Matrix
 import no.danielzeller.blurbehindlib.*
-import no.danielzeller.blurbehindlib.opengl.RenderTexture
-import no.danielzeller.blurbehindlib.opengl.ShaderProgram
-import no.danielzeller.blurbehindlib.opengl.SpriteMesh
-import no.danielzeller.blurbehindlib.opengl.TextureShaderProgram
+import no.danielzeller.blurbehindlib.opengl.*
 
 private const val PADDING_TOP = 50f
 
