@@ -161,7 +161,7 @@ class BlurBehindLayout : FrameLayout {
         viewBehind?.getHitRect(viewBehindRect)
         getHitRect(thisViewRect)
         glCanvas?.scale(commonRenderer.scale, commonRenderer.scale)
-        glCanvas?.translate((thisViewRect.left - viewBehindRect.left).toFloat(), (viewBehindRect.top - thisViewRect.top + commonRenderer.paddingTop * 0.5f).toFloat())
+        glCanvas?.translate((thisViewRect.left - viewBehindRect.left).toFloat(), (viewBehindRect.top - thisViewRect.top + commonRenderer.paddingTop * 0.5f))
         visibility = View.INVISIBLE
         viewBehind?.draw(glCanvas)
         visibility = View.VISIBLE
@@ -195,7 +195,10 @@ class BlurBehindLayout : FrameLayout {
     fun disable() {
         Choreographer.getInstance().removeFrameCallback(frameCallBack)
         viewTreeObserver.removeOnScrollChangedListener(onScrollChangesListener)
-        renderView.visibility = GONE
+        //Setting visibility=GONE causes a black flicker since the SurfaceView rendering
+        //and View rendering is'nt 1-1 synced. Setting translation off the screen removes the flicker.
+        //The View is'nt updated anyways since we only do a render in the frameCallBack
+        renderView.translationX = 100000f
         isBlurDisabled = true
     }
 
@@ -204,8 +207,9 @@ class BlurBehindLayout : FrameLayout {
             if (updateMode == UpdateMode.ON_SCROLL) {
                 addOnScrollListener()
             }
-            updateForMilliSeconds(50)
+            renderView.translationX = 0f
             isBlurDisabled = false
+            updateForMilliSeconds(10)
         }
     }
 }

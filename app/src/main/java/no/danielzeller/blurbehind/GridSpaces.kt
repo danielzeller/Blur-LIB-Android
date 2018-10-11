@@ -3,6 +3,7 @@ package no.danielzeller.blurbehind
 import android.graphics.Rect
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import no.danielzeller.blurbehind.R
 
 class GridSpaces(val space: Int, val topPadding: Int, val bottomPadding: Int) : RecyclerView.ItemDecoration() {
 

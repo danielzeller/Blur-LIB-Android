@@ -2,12 +2,23 @@ package no.danielzeller.blurbehind.extensions
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 
 inline fun ValueAnimator.onEnd(crossinline func: () -> Unit): ValueAnimator {
     addListener(object : AnimatorListenerAdapter() {
         override fun onAnimationEnd(animation: Animator?) {
             super.onAnimationEnd(animation)
+            func()
+        }
+    })
+    return this
+}
+
+inline fun ValueAnimator.onStart(crossinline func: () -> Unit): ValueAnimator {
+    addListener(object : AnimatorListenerAdapter() {
+        override fun onAnimationStart(animation: Animator?) {
+            super.onAnimationStart(animation)
             func()
         }
     })
@@ -26,3 +37,12 @@ inline fun ValueAnimator.delay(delay: Long): ValueAnimator {
     return this
 }
 
+inline fun ValueAnimator.start(runnigAnims: ArrayList<ValueAnimator>) {
+    runnigAnims.add(this)
+    start()
+}
+
+inline fun ValueAnimator.interpolate(interp: TimeInterpolator): ValueAnimator {
+    interpolator = interp
+    return this
+}

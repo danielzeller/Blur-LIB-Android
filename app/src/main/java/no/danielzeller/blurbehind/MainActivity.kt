@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import no.danielzeller.blurbehind.model.UnsplashItem
 
+const val DETAILS_FRAGMENT_TAG = "details_fragment_tag"
 private const val UNSPLASH_RANDOM_URL = "https://source.unsplash.com/random?"
 private const val CARDS_COUNT = 12
 
@@ -69,5 +70,20 @@ class MainActivity : AppCompatActivity() {
         val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.topMargin = margin
         return layoutParams
+    }
+
+    override fun onBackPressed() {
+        val fragment = supportFragmentManager.findFragmentByTag(DETAILS_FRAGMENT_TAG)
+        if (fragment != null) {
+            val detailsFragment = fragment as DetailsFragment
+            if (!detailsFragment.isExitAnimating) {
+                detailsFragment.exitAnimateAndRemove()
+            } else {
+                detailsFragment.cancelAllRunnungAnimations()
+                super.onBackPressed()
+            }
+        } else {
+            super.onBackPressed()
+        }
     }
 }
