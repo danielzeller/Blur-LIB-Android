@@ -5,6 +5,7 @@ import android.graphics.*
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import no.danielzeller.blurbehind.model.UnsplashItem
 import kotlinx.android.synthetic.main.activity_main.view.*
 import no.danielzeller.blurbehind.animation.CardTransitionHelper
 import no.danielzeller.blurbehind.animation.MOVE_DURATION
+import no.danielzeller.blurbehindlib.ScreenRectUtil
 
 
 const val ORIGIN_VIEW_TAG = "origin_view_tag"
@@ -110,8 +112,7 @@ class DetailsFragment : Fragment() {
         @JvmStatic
         fun newInstance(clickedView: View, unsplashItem: UnsplashItem) =
                 DetailsFragment().apply {
-                    val rect = Rect()
-                    clickedView.getHitRect(rect)
+                    val rect = ScreenRectUtil.getScreenRect(clickedView)
                     arguments = Bundle().apply {
                         putIntegerArrayList(ORIGIN_VIEW_SCREEN_POSITION_KEY, arrayListOf(rect.left, rect.top, rect.right, rect.bottom))
                         putSerializable(UNSPLASH_ITEM_KEY, unsplashItem)

@@ -222,7 +222,6 @@ class BlurBehindLayout : FrameLayout {
         glCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         viewBehind?.getHitRect(viewBehindRect)
         getHitRect(thisViewRect)
-
         glCanvas?.scale(commonRenderer.scale, commonRenderer.scale)
         glCanvas?.translate((thisViewRect.left - viewBehindRect.left).toFloat(), (viewBehindRect.top - thisViewRect.top + commonRenderer.paddingTop * 0.5f))
 
