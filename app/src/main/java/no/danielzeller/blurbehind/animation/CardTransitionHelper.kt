@@ -26,8 +26,8 @@ import no.danielzeller.blurbehindlib.BlurBehindLayout
 private const val FADE_TEXT_DURATION = 300L
 const val FADE_BARS_DURATION = 100L
 const val MOVE_DURATION = 700L
-const val TARGET_BLUR_RADIUS = 40f
-const val BACKGROUND_VIEWS_SCALED_DOWN_SIZE = 0.9f
+const val TARGET_BLUR_RADIUS = 60f
+const val BACKGROUND_VIEWS_SCALED_DOWN_SIZE = 0.85f
 
 val moveInterpolator = PathInterpolator(.52f, 0f, .18f, 1f)
 val scaleInterpolator = PathInterpolator(.24f, 0f, .13f, 1f)
@@ -95,7 +95,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
         animateCardSize(originSize)
         animateCardCornerRadius(cardRootView.resources.getDimension(R.dimen.card_view_corner_radius))
         fadeCardViewTextViews(1.0f, MOVE_DURATION - FADE_TEXT_DURATION)
-        scaleBackgroundView(1f, 0.3f, scaleInterpolator, -0.6f)
+        scaleBackgroundView(1f, 0.3f, scaleInterpolator, -0.7f)
         ObjectAnimator.ofFloat(textContainer, View.ALPHA, textContainer.alpha, 0f).setDuration((MOVE_DURATION * 0.4f).toLong()).start(runningAnimations)
     }
 
@@ -113,7 +113,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
                     blurView.blurRadius = value as Float
                 }.onEnd { isEnterAnimating = false }.start(runningAnimations)
 
-        ObjectAnimator.ofFloat(blurDimmer, View.ALPHA, 0f, 1f).setDuration((MOVE_DURATION * 1.5f).toLong())
+        ObjectAnimator.ofFloat(blurDimmer, View.ALPHA, 0f, 1f).setDuration((MOVE_DURATION * 1.2f).toLong())
                 .interpolate(moveInterpolator).delay(FADE_BARS_DURATION).start(runningAnimations)
     }
 

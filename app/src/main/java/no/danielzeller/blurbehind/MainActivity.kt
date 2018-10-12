@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import no.danielzeller.blurbehind.model.UnsplashItem
 
 const val DETAILS_FRAGMENT_TAG = "details_fragment_tag"
-private const val UNSPLASH_RANDOM_URL = "https://source.unsplash.com/random/"
+private const val UNSPLASH_RANDOM_URL = "https://source.unsplash.com/random/960x540?"
 private const val CARDS_COUNT = 12
 
 class MainActivity : AppCompatActivity() {
@@ -56,9 +56,8 @@ class MainActivity : AppCompatActivity() {
         val subHeadings = resources.getStringArray(R.array.sub_headings)
         val articleContent = resources.getStringArray(R.array.articles_content)
         var cardTypeIndex = 0
-        val screenWidth = resources.displayMetrics.widthPixels
         for (i in 0 until CARDS_COUNT) {
-            items.add(UnsplashItem(UNSPLASH_RANDOM_URL + screenWidth + "x" + (screenWidth * 3f / 4f) + "?" + i, headings[i], subHeadings[i], cardsLayouts[cardTypeIndex], articleContent[0]))
+            items.add(UnsplashItem(UNSPLASH_RANDOM_URL  + i, headings[i], subHeadings[i], cardsLayouts[cardTypeIndex], articleContent[0]))
 
             cardTypeIndex += 1
             if (cardTypeIndex == cardsLayouts.size) cardTypeIndex = 0
