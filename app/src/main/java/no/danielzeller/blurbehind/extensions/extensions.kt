@@ -37,8 +37,8 @@ inline fun ValueAnimator.delay(delay: Long): ValueAnimator {
     return this
 }
 
-inline fun ValueAnimator.start(runnigAnims: ArrayList<ValueAnimator>) {
-    runnigAnims.add(this)
+inline fun ValueAnimator.start(runningAnims: ArrayList<ValueAnimator>) {
+    runningAnims.add(this)
     start()
 }
 

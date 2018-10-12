@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="topbar_height">85dp</dimen>
-    <dimen name="navigationbar_height">48dp</dimen>
+    <dimen name="top_bar_height">85dp</dimen>
+    <dimen name="navigation_bar_height">48dp</dimen>
     <dimen name="grid_top_padding">112dp</dimen>
     <dimen name="grid_bottom_padding">76dp</dimen>
     <dimen name="grid_item_horizontal_space">16dp</dimen>
     <dimen name="card_view_corner_radius">17dp</dimen>
-    <dimen name="medium_heading_size">24sp</dimen>
     <dimen name="small_text_size">10sp</dimen>
-    <dimen name="author_row_height">30dp</dimen>
+    <dimen name="h1_text_size">24sp</dimen>
+    <dimen name="h2_text_size">14sp</dimen>
+    <dimen name="h3_text_size">12sp</dimen>
+    <dimen name="heading_padding_top">24dp</dimen>
+
 </resources>

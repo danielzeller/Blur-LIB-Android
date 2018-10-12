@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layerType="hardware">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardview"
+        android:id="@+id/cardView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipChildren="true"
@@ -18,9 +17,9 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="percent" >
+        app:layout_constraintWidth_default="percent">
 
-        <no.danielzeller.blurbehind.animation.ParallaxImageView
+        <no.danielzeller.blurbehind.animation.ScaleInImageView
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -30,18 +29,14 @@
             android:id="@+id/heading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|left"
+            android:layout_gravity="bottom|start"
             android:background="@drawable/black_gradient"
-            android:fontFamily="sans-serif-condensed"
-            android:gravity="left"
+            android:gravity="start"
             android:paddingStart="20dp"
-            android:paddingTop="24dp"
-            android:paddingEnd="16dp"
+            android:paddingTop="@dimen/heading_padding_top"
+            android:paddingEnd="@dimen/grid_item_horizontal_space"
             android:paddingBottom="24dp"
-            android:text="I'M A HEADING"
-            android:textColor="@android:color/white"
-            android:textSize="14dp"
-            android:textStyle="bold" />
+            android:textAppearance="@style/H2" />
 
         <include
             layout="@layout/loader_view"

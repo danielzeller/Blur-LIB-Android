@@ -5,12 +5,10 @@ import android.graphics.*
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.card2.view.*
 import kotlinx.android.synthetic.main.fragment_details.view.*
 import no.danielzeller.blurbehind.model.UnsplashItem
@@ -99,11 +97,11 @@ class DetailsFragment : Fragment() {
     fun exitAnimateAndRemove() {
         cardTransitionHelper.animateCardOut()
         cardTransitionHelper.fadeOutFullscreenBlur(view!!.fullscreenBlur, view!!.fullscreenDimmer)
-        cardTransitionHelper.fadeInTopAndBottomBlurViews(activity, { onExitAnimationComplete() })
+        cardTransitionHelper.fadeInTopAndBottomBlurViews(activity) { onExitAnimationComplete() }
         isExitAnimating = true
     }
 
-    fun cancelAllRunnungAnimations() {
+    fun cancelAllRunningAnimations() {
         cardTransitionHelper.cancelAllRunningAnimations()
     }
 

@@ -19,7 +19,6 @@ import android.view.animation.LinearInterpolator
 import android.view.animation.PathInterpolator
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.card2.view.*
-import kotlinx.android.synthetic.main.fragment_details.view.*
 import no.danielzeller.blurbehind.*
 import no.danielzeller.blurbehind.extensions.*
 import no.danielzeller.blurbehindlib.BlurBehindLayout
@@ -47,9 +46,9 @@ class FrameRateCounter {
 
 class CardTransitionHelper(private val cardRootView: ConstraintLayout, private val backgroundView: ViewGroup, val textContainer: View) {
 
-    private val contrainSet = ConstraintSet()
+    private val constraintSet = ConstraintSet()
     private val cardViewCenterPosition = floatArrayOf(0f, 0f)
-    private val cardView: CardView
+    private val cardView: CardView = cardRootView.getChildAt(0) as CardView
     private lateinit var movePath: Path
     private val originSize = PointF()
     private val targetSize = PointF()
@@ -58,18 +57,14 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
     private val frameRateCounter = FrameRateCounter()
     private var isEnterAnimating = false
 
-    init {
-        this.cardView = cardRootView.getChildAt(0) as CardView
-    }
-
     fun animateCardIn() {
         cardRootView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 if (cardRootView.image.drawable != null) {
 
-                    var drawable = cardRootView.image.drawable
-                    var targetWidth = backgroundView.width.toFloat()
-                    var targetHeight = Math.min(targetWidth, (drawable.intrinsicHeight.toFloat() / drawable.intrinsicWidth.toFloat()) * targetWidth)
+                    val drawable = cardRootView.image.drawable
+                    val targetWidth = backgroundView.width.toFloat()
+                    val targetHeight = Math.min(targetWidth, (drawable.intrinsicHeight.toFloat() / drawable.intrinsicWidth.toFloat()) * targetWidth)
 
                     targetSize.set(targetWidth, targetHeight)
                     originSize.set(cardRootView.width.toFloat(), cardRootView.height.toFloat())
@@ -88,7 +83,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
         })
     }
 
-    var textContainerOffset = 0f
+    private var textContainerOffset = 0f
     private fun animateTextContainer() {
         ObjectAnimator.ofFloat(textContainer, View.ALPHA, textContainer.alpha, 1f).setDuration((MOVE_DURATION *0.6f).toLong()).delay((MOVE_DURATION *0.4f).toLong()).interpolate(moveInterpolator).start(runningAnimations)
         ValueAnimator.ofFloat(-textContainer.height.toFloat(), 0f).setDuration(MOVE_DURATION).interpolate(moveInterpolator).onUpdate { anim -> textContainerOffset = anim as Float }.start(runningAnimations)
@@ -133,7 +128,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
                     blurView.disable()
                 }.start(runningAnimations)
 
-        ObjectAnimator.ofFloat(blurDimmer, View.ALPHA, blurDimmer.alpha, 0f).setDuration((MOVE_DURATION - FADE_BARS_DURATION).toLong())
+        ObjectAnimator.ofFloat(blurDimmer, View.ALPHA, blurDimmer.alpha, 0f).setDuration(MOVE_DURATION - FADE_BARS_DURATION)
                 .interpolate(moveInterpolator).start(runningAnimations)
     }
 
@@ -154,9 +149,9 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
 
     fun fadeInTopAndBottomBlurViews(activity: Activity?, onExitAnimationComplete: () -> Unit) {
         val appBarDimmer = activity?.findViewById<View>(R.id.appBarFullDimmer)!!
-        val navBarDimmer = activity?.findViewById<View>(R.id.navigationBarFullDimmer)
-        val appBarBlur = activity?.findViewById<BlurBehindLayout>(R.id.appBarBlurLayout)
-        val navBarBlur = activity?.findViewById<BlurBehindLayout>(R.id.navigationBarBlurLayout)
+        val navBarDimmer = activity.findViewById<View>(R.id.navigationBarFullDimmer)
+        val appBarBlur = activity.findViewById<BlurBehindLayout>(R.id.appBarBlurLayout)
+        val navBarBlur = activity.findViewById<BlurBehindLayout>(R.id.navigationBarBlurLayout)
         appBarBlur?.enable()
         navBarBlur?.enable()
 
@@ -166,7 +161,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
         }.start(runningAnimations)
         ObjectAnimator.ofFloat(navBarDimmer, View.ALPHA, appBarDimmer.alpha, 0f).setDuration(MOVE_DURATION).onEnd {
             navBarDimmer?.visibility = View.GONE
-            appBarDimmer?.visibility = View.GONE
+            appBarDimmer.visibility = View.GONE
             onExitAnimationComplete.invoke()
         }.start(runningAnimations)
     }
@@ -183,7 +178,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
         val pm = PathMeasure(movePath, false)
         ValueAnimator.ofFloat(currentPathMoveProgress, toPosition).setDuration(MOVE_DURATION).interpolate(moveInterpolator).onUpdate { anim ->
             currentPathMoveProgress = anim as Float
-            pm.getPosTan(pm.getLength() * currentPathMoveProgress, cardViewCenterPosition, null);
+            pm.getPosTan(pm.length * currentPathMoveProgress, cardViewCenterPosition, null)
 
         }.start(runningAnimations)
     }
@@ -192,7 +187,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
         val movePath = Path()
         val cardViewPos = Rect()
         val centerX = targetSize.x / 2f
-        val centerY = targetSize.y / 2f + cardRootView.resources.getDimension(R.dimen.topbar_height)
+        val centerY = targetSize.y / 2f + cardRootView.resources.getDimension(R.dimen.top_bar_height)
         cardRootView.getHitRect(cardViewPos)
         movePath.moveTo(cardViewPos.exactCenterX(), cardViewPos.exactCenterY())
         movePath.cubicTo(centerX + (centerX - cardViewPos.exactCenterX()) * 0.5f, cardViewPos.exactCenterY() - (cardViewPos.exactCenterY() - centerY) / 4,
@@ -213,11 +208,11 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
         ValueAnimator.ofObject(PointFEvaluator(), PointF(cardRootView.width.toFloat(), cardRootView.height.toFloat()), targetSize)
                 .setDuration(MOVE_DURATION).interpolate(moveInterpolator).onUpdate { value ->
                     val size = value as PointF
-                    contrainSet.clone(cardRootView)
-                    contrainSet.setDimensionRatio(cardView.id, "1:" + (size.y / size.x))
-                    contrainSet.applyTo(cardRootView)
+                    constraintSet.clone(cardRootView)
+                    constraintSet.setDimensionRatio(cardView.id, "1:" + (size.y / size.x))
+                    constraintSet.applyTo(cardRootView)
 
-                    var params = cardRootView.layoutParams as FrameLayout.LayoutParams
+                    val params = cardRootView.layoutParams as FrameLayout.LayoutParams
                     params.leftMargin = (cardViewCenterPosition[0] - size.x / 2).toInt()
                     params.topMargin = (cardViewCenterPosition[1] - size.y / 2).toInt()
                     params.width = size.x.toInt()
@@ -248,9 +243,9 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
 
                     if (!disableFlipAnimation) {
                         //Little trick to give the impression ov some air resistance making the view flip slightly :)
-                        val targetScaleForEasedRotaion = (scale - BACKGROUND_VIEWS_SCALED_DOWN_SIZE) * 200f
+                        val targetScaleForEasedRotation = (scale - BACKGROUND_VIEWS_SCALED_DOWN_SIZE) * 200f
                         val time = frameRateCounter.timeStep()
-                        val easeAmount = ((targetScaleForEasedRotaion - easedScale) * time) * 15f
+                        val easeAmount = ((targetScaleForEasedRotation - easedScale) * time) * 15f
                         easedScaleOffset += (easeAmount - easedScaleOffset) * time * 20f
                         backgroundView.rotationX = easedScaleOffset * rotateAmount
                         easedScale += easeAmount

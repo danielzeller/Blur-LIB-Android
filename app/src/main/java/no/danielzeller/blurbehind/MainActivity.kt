@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         appBarDimmer.layoutParams = getStatusBarHeightParams()
     }
 
-    fun setupBlurBiews() {
+    private fun setupBlurBiews() {
         appBarBlurLayout.viewBehind = viewToBlur
         navigationBarBlurLayout.viewBehind = viewToBlur
     }
@@ -49,16 +49,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createUnsplashItems(): ArrayList<UnsplashItem> {
-        var items = ArrayList<UnsplashItem>()
+        val items = ArrayList<UnsplashItem>()
 
         val cardsLayouts = intArrayOf(R.layout.card2, R.layout.card3, R.layout.card4, R.layout.card4)
         val headings = resources.getStringArray(R.array.headings)
         val subHeadings = resources.getStringArray(R.array.sub_headings)
         val articleContent = resources.getStringArray(R.array.articles_content)
         var cardTypeIndex = 0
-        val screenWidh = resources.displayMetrics.widthPixels
+        val screenWidth = resources.displayMetrics.widthPixels
         for (i in 0 until CARDS_COUNT) {
-            items.add(UnsplashItem(UNSPLASH_RANDOM_URL + screenWidh + "x" + (screenWidh * 3f / 4f) + "?" + i, headings[i], subHeadings[i], cardsLayouts[cardTypeIndex], articleContent[0]))
+            items.add(UnsplashItem(UNSPLASH_RANDOM_URL + screenWidth + "x" + (screenWidth * 3f / 4f) + "?" + i, headings[i], subHeadings[i], cardsLayouts[cardTypeIndex], articleContent[0]))
 
             cardTypeIndex += 1
             if (cardTypeIndex == cardsLayouts.size) cardTypeIndex = 0
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             if (!detailsFragment.isExitAnimating) {
                 detailsFragment.exitAnimateAndRemove()
             } else {
-                detailsFragment.cancelAllRunnungAnimations()
+                detailsFragment.cancelAllRunningAnimations()
                 super.onBackPressed()
             }
         } else {

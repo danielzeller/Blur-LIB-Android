@@ -6,7 +6,7 @@
     android:layerType="hardware">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardview"
+        android:id="@+id/cardView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipChildren="true"
@@ -17,9 +17,9 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
-        <no.danielzeller.blurbehind.animation.ParallaxImageView
+        <no.danielzeller.blurbehind.animation.ScaleInImageView
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -29,32 +29,24 @@
             android:id="@+id/heading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|left"
+            android:layout_gravity="bottom|start"
+            android:paddingHorizontal="@dimen/grid_item_horizontal_space"
             android:background="@drawable/black_gradient"
-            android:fontFamily="sans-serif-condensed"
-            android:gravity="left|bottom"
-            android:paddingLeft="16dp"
-            android:paddingTop="24dp"
+            android:gravity="start|bottom"
+            android:paddingTop="@dimen/heading_padding_top"
             android:paddingBottom="45dp"
-            android:text="I'M A HEADING"
-            android:textColor="@android:color/white"
-            android:textSize="24dp"
-            android:textStyle="bold" />
+            android:textAppearance="@style/H1" />
 
         <TextView
             android:id="@+id/subHeading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|left"
-            android:layout_marginStart="16dp"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="@dimen/grid_item_horizontal_space"
             android:layout_marginBottom="27dp"
             android:alpha="0.75"
-            android:fontFamily="sans-serif"
-            android:gravity="left|bottom"
-            android:text="RANDOM IMAGE FROM UNSPLASH"
-            android:textColor="@android:color/white"
-            android:textSize="12dp"
-            android:textStyle="bold" />
+            android:gravity="start|bottom"
+            android:textAppearance="@style/H3" />
 
         <include
             layout="@layout/loader_view"

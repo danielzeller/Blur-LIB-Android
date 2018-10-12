@@ -3,9 +3,8 @@ package no.danielzeller.blurbehind
 import android.graphics.Rect
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import no.danielzeller.blurbehind.R
 
-class GridSpaces(val space: Int, val topPadding: Int, val bottomPadding: Int) : RecyclerView.ItemDecoration() {
+class GridSpaces(val space: Int, private val topPadding: Int, private val bottomPadding: Int) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)

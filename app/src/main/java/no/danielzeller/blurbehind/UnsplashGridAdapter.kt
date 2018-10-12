@@ -13,7 +13,7 @@ import android.widget.TextView
 import com.squareup.picasso.Callback
 import kotlinx.android.synthetic.main.card2.view.*
 import kotlinx.android.synthetic.main.loader_view.view.*
-import no.danielzeller.blurbehind.animation.ParallaxImageView
+import no.danielzeller.blurbehind.animation.ScaleInImageView
 import no.danielzeller.blurbehind.extensions.delay
 import no.danielzeller.blurbehind.extensions.onEnd
 import no.danielzeller.blurbehind.model.UnsplashItem
@@ -21,7 +21,7 @@ import java.lang.Exception
 import java.lang.ref.WeakReference
 
 
-class UnsplashGridAdapter(val items: List<UnsplashItem>, val supportFragmentManager: FragmentManager, val viewModel: UnsplashViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class UnsplashGridAdapter(val items: List<UnsplashItem>, private val supportFragmentManager: FragmentManager, private val viewModel: UnsplashViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -41,11 +41,11 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, val supportFragmentMana
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
-        var viewHolder: CardViewHolder;
-        if (holder.getItemViewType() == R.layout.card4) {
-            viewHolder = holder as CardViewHolder;
+        val viewHolder: CardViewHolder
+        if (holder.itemViewType == R.layout.card4) {
+            viewHolder = holder as CardViewHolder
         } else {
-            viewHolder = holder as CardViewHolder2;
+            viewHolder = holder as CardViewHolder2
             viewHolder.subHeading.text = item.subHeading
         }
         viewHolder.heading.text = item.heading
@@ -65,7 +65,7 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, val supportFragmentMana
         }
     }
 
-    fun setupImageView(viewHolder: CardViewHolder, item: UnsplashItem) {
+    private fun setupImageView(viewHolder: CardViewHolder, item: UnsplashItem) {
 
         (viewHolder.progressBarImage.drawable as Animatable).start()
 
@@ -78,8 +78,8 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, val supportFragmentMana
     }
 
     private fun loadImage(viewHolder: CardViewHolder, item: UnsplashItem) {
-        var loaderRef = WeakReference<View>(viewHolder.progressBar)
-        var imageRef = WeakReference<ParallaxImageView>(viewHolder.image)
+        val loaderRef = WeakReference<View>(viewHolder.progressBar)
+        val imageRef = WeakReference<ScaleInImageView>(viewHolder.image)
         viewHolder.progressBar.visibility = View.VISIBLE
         viewModel.picasso.load(item.imageUrl).config(Bitmap.Config.HARDWARE).into(viewHolder.image, object : Callback {
             override fun onSuccess() {
@@ -95,21 +95,21 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, val supportFragmentMana
         })
     }
 
-    inner class CardViewHolder2 : CardViewHolder {
+    inner class CardViewHolder2(view: View) : CardViewHolder(view) {
         val subHeading: TextView
 
-        constructor(view: View) : super(view) {
+        init {
             subHeading = view.subHeading
         }
     }
 
-    open inner class CardViewHolder : RecyclerView.ViewHolder {
-        val image: ParallaxImageView
+    open inner class CardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val image: ScaleInImageView
         val heading: TextView
         val progressBar: View
         val progressBarImage: ImageView
 
-        constructor(view: View) : super(view) {
+        init {
             image = view.image
             heading = view.heading
             progressBar = view.progressView

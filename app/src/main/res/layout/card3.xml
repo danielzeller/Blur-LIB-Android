@@ -6,7 +6,7 @@
     android:layerType="hardware">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardview"
+        android:id="@+id/cardView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipChildren="true"
@@ -17,14 +17,14 @@
         app:layout_constraintDimensionRatio="1:0.5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
 
-        <no.danielzeller.blurbehind.animation.ParallaxImageView
+        <no.danielzeller.blurbehind.animation.ScaleInImageView
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"  />
+            android:scaleType="centerCrop" />
 
         <View
             android:layout_width="match_parent"
@@ -40,9 +40,7 @@
             android:fontFamily="sans-serif-condensed"
             android:gravity="center"
             android:paddingBottom="15dp"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/medium_heading_size"
-            android:textStyle="bold" />
+            android:textAppearance="@style/H1" />
 
         <TextView
             android:id="@+id/subHeading"
@@ -50,15 +48,13 @@
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:alpha="0.75"
-            android:fontFamily="sans-serif"
             android:gravity="center|bottom"
-            android:text="RANDOM IMAGE FROM UNSPLASH"
-            android:textColor="@android:color/white"
-            android:textSize="12dp"
-            android:textStyle="bold" />
+            android:textAppearance="@style/H3" />
+
         <include
             layout="@layout/loader_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
     </android.support.v7.widget.CardView>
 </android.support.constraint.ConstraintLayout>

@@ -36,7 +36,7 @@
     <no.danielzeller.blurbehindlib.BlurBehindLayout
         android:id="@+id/appBarBlurLayout"
         android:layout_width="0dp"
-        android:layout_height="@dimen/topbar_height"
+        android:layout_height="@dimen/top_bar_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -74,7 +74,7 @@
     <no.danielzeller.blurbehindlib.BlurBehindLayout
         android:id="@+id/navigationBarBlurLayout"
         android:layout_width="0dp"
-        android:layout_height="@dimen/navigationbar_height"
+        android:layout_height="@dimen/navigation_bar_height"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
