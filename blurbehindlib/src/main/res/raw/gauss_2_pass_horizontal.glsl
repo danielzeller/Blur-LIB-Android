@@ -35,5 +35,5 @@ void main() {
        weightSum += gaussWeight;
     }
 
-    gl_FragColor =  col / weightSum;
+    gl_FragColor =  vec4(col.rgb / weightSum,1.0);
 }
