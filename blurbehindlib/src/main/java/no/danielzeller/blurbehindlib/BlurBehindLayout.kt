@@ -1,5 +1,6 @@
 package no.danielzeller.blurbehindlib
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -7,6 +8,7 @@ import android.graphics.Rect
 import android.opengl.GLSurfaceView
 import android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Choreographer
 import android.view.TextureView
 import android.view.View
@@ -16,7 +18,7 @@ import no.danielzeller.blurbehindlib.renderers.CommonRenderer
 import no.danielzeller.blurbehindlib.renderers.GLSurfaceViewRenderer
 import no.danielzeller.blurbehindlib.renderers.TextureViewRenderer
 import android.view.ViewGroup
-import java.lang.IllegalStateException
+import kotlin.IllegalStateException
 
 
 enum class UpdateMode {
@@ -68,6 +70,17 @@ class BlurBehindLayout : FrameLayout {
             field = value
         }
 
+    /**
+     * If true the BlurBehindLayout will use the alpha value of the first child as clipping mask.
+     * This can for instance be used to create blur behind TexViews or have rounded edges etc.
+     * NOTE This will force useTextureView to be true in order to support Transparent rendering.
+     */
+    var useChildAlphaAsMask = false
+        set(value) {
+            commonRenderer?.useChildAlphaAsMask = value
+            field = value
+            checkTextureView()
+        }
 
     private val viewBehindRect = Rect()
     private val thisViewRect = Rect()
@@ -78,11 +91,18 @@ class BlurBehindLayout : FrameLayout {
     private lateinit var renderView: View
     private var updateViewUntil = -1L
     private var isBlurDisabled = false
+    private var paddingVertical = 0f
+    private var blurBehindViewID =-1
 
     constructor(context: Context, useTextureView: Boolean, blurTextureScale: Float) : super(context) {
         this.blurTextureScale = blurTextureScale
-        initView(context)
         this.useTextureView = useTextureView
+        initView(context)
+    }
+
+    constructor(context: Context, useChildAlphaAsMask: Boolean) : super(context) {
+        this.useChildAlphaAsMask = useChildAlphaAsMask
+        initView(context)
     }
 
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
@@ -134,8 +154,7 @@ class BlurBehindLayout : FrameLayout {
     }
 
     private fun initView(context: Context) {
-        setWillNotDraw(false)
-        commonRenderer = CommonRenderer(context, blurTextureScale)
+        commonRenderer = CommonRenderer(context, blurTextureScale, useChildAlphaAsMask, paddingVertical)
         commonRenderer!!.blurRadius = blurRadius
         if (useTextureView) {
             createTextureView(context)
@@ -151,14 +170,18 @@ class BlurBehindLayout : FrameLayout {
                 R.styleable.Blur,
                 0, 0)
         try {
-            useTextureView = typedArray.getBoolean(R.styleable.Blur_useTextureView, true)
+            useTextureView = typedArray.getBoolean(R.styleable.Blur_useTextureView, false)
+            useChildAlphaAsMask = typedArray.getBoolean(R.styleable.Blur_useChildAlphaAsMask, false)
             updateMode = convertIntToEnum(typedArray.getInteger(R.styleable.Blur_updateMode, updateMode.ordinal))
             blurRadius = typedArray.getFloat(R.styleable.Blur_blurRadius, blurRadius)
             blurTextureScale = typedArray.getFloat(R.styleable.Blur_blurTextureScale, blurTextureScale)
+            paddingVertical = typedArray.getFloat(R.styleable.Blur_blurPaddingVertical, resources.getDimension(R.dimen.default_verticalPaddin))
+
         } finally {
             typedArray.recycle()
         }
     }
+
 
     private fun addOnScrollListener() {
         viewTreeObserver.addOnScrollChangedListener(onScrollChangesListener)
@@ -195,6 +218,7 @@ class BlurBehindLayout : FrameLayout {
     private fun redrawBlurTexture() {
         if (commonRenderer!!.isCreated && renderView.visibility == View.VISIBLE) {
             renderBehindViewToTexture()
+            renderChildViewToTexture()
             updateRenderView()
         }
         if (updateMode == UpdateMode.CONTINUOUSLY || System.currentTimeMillis() < updateViewUntil) {
@@ -217,17 +241,32 @@ class BlurBehindLayout : FrameLayout {
     private fun renderBehindViewToTexture() {
         val commonRenderer = commonRenderer!!
 
-        val glCanvas = commonRenderer.surfaceTexture.beginDraw()
+        val glCanvas = commonRenderer.behindViewSurfaceTexture.beginDraw()
 
         glCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         viewBehind?.getHitRect(viewBehindRect)
         getHitRect(thisViewRect)
         glCanvas?.scale(commonRenderer.scale, commonRenderer.scale)
-        glCanvas?.translate((thisViewRect.left - viewBehindRect.left).toFloat(), (viewBehindRect.top - thisViewRect.top + commonRenderer.paddingTop * 0.5f))
+        glCanvas?.translate((thisViewRect.left - viewBehindRect.left).toFloat(), (viewBehindRect.top - thisViewRect.top + paddingVertical * 0.5f))
 
         viewBehind?.draw(glCanvas)
 
-        commonRenderer.surfaceTexture.endDraw(glCanvas)
+        commonRenderer.behindViewSurfaceTexture.endDraw(glCanvas)
+    }
+
+    private fun renderChildViewToTexture() {
+        if (useChildAlphaAsMask) {
+            if (childCount > 1) {
+                val commonRenderer = commonRenderer!!
+                val glCanvas = commonRenderer.childViewSurfaceTexture.beginDraw()
+
+                glCanvas?.scale(1f,  height.toFloat()/(height.toFloat() + paddingVertical) )
+                glCanvas?.translate(0f, paddingVertical/2f )
+                glCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+                drawChild(glCanvas, getChildAt(1), drawingTime)
+                commonRenderer.childViewSurfaceTexture.endDraw(glCanvas)
+            }
+        }
     }
 
     private fun convertIntToEnum(id: Int): UpdateMode {
@@ -247,6 +286,12 @@ class BlurBehindLayout : FrameLayout {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         updateForMilliSeconds(500)
+    }
+
+
+    private fun checkTextureView() {
+        if (!useTextureView && useChildAlphaAsMask)
+            throw IllegalStateException("useChildAlphaAsMask=true requires useTextureView=true")
     }
 
     private fun checkParent(value: View?) {

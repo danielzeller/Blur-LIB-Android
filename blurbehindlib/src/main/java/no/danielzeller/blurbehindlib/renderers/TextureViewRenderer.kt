@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.SurfaceTexture
 import android.opengl.*
 import android.opengl.EGL14.EGL_OPENGL_ES2_BIT
+import android.opengl.GLES20.glBlendFunc
+import android.opengl.GLES20.glEnable
 import android.view.TextureView
 import javax.microedition.khronos.egl.*
 import javax.microedition.khronos.egl.EGL10.*
@@ -11,31 +13,32 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.egl.EGLContext
 import javax.microedition.khronos.egl.EGLDisplay
 import javax.microedition.khronos.egl.EGLSurface
+import javax.microedition.khronos.opengles.GL10.*
 
 
 class TextureViewRenderer(val context: Context) : TextureView.SurfaceTextureListener {
 
-    private lateinit var textureViewGLRenderer: TextureViewGLRenderer
+    private lateinit var textureViewRenderThread: TextureViewRenderThread
     override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {}
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {}
 
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
-        textureViewGLRenderer.isStopped = true
+        textureViewRenderThread.isStopped = true
         return false
     }
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-        textureViewGLRenderer = TextureViewGLRenderer(surface, width, height)
-        textureViewGLRenderer.start()
+        textureViewRenderThread = TextureViewRenderThread(surface, width, height)
+        textureViewRenderThread.start()
     }
 
     fun update() {
-        textureViewGLRenderer.update = true
+        textureViewRenderThread.update = true
     }
 
     lateinit var commonRenderer: CommonRenderer
 
-    inner class TextureViewGLRenderer(private val surface: SurfaceTexture, private val width: Int, private val height: Int) : Thread() {
+    inner class TextureViewRenderThread(private val surface: SurfaceTexture, private val width: Int, private val height: Int) : Thread() {
 
         private var egl: EGL10? = null
         private var eglDisplay: EGLDisplay? = null
@@ -64,11 +67,14 @@ class TextureViewRenderer(val context: Context) : TextureView.SurfaceTextureList
                 }
                 egl!!.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
 
-                GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
                 GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
+                GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
+
                 if (!commonRenderer.isCreated) {
                     commonRenderer.onSurfaceCreated()
                     commonRenderer.onSurfaceChanged(width, height)
+                    glEnable(GLES20.GL_BLEND)
+                    glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
                 }
 
                 commonRenderer.onDrawFrame()
@@ -82,7 +88,7 @@ class TextureViewRenderer(val context: Context) : TextureView.SurfaceTextureList
 
         fun destroyResources() {
             surface.release()
-            commonRenderer.surfaceTexture.releaseSurface()
+            commonRenderer.behindViewSurfaceTexture.releaseSurface()
             egl?.eglDestroyContext(eglDisplay, eglContext)
             egl?.eglDestroySurface(eglDisplay, eglSurface)
         }
@@ -93,7 +99,7 @@ class TextureViewRenderer(val context: Context) : TextureView.SurfaceTextureList
                 EGL_GREEN_SIZE, 8,
                 EGL_BLUE_SIZE, 8,
                 EGL_ALPHA_SIZE, 8,
-                EGL_DEPTH_SIZE, 0,
+                EGL_DEPTH_SIZE, 16,
                 EGL_STENCIL_SIZE, 0,
                 EGL_NONE
         )

@@ -35,7 +35,9 @@ class DetailsFragment : Fragment() {
         arguments?.let {
             val originViewScreenPosArray = it.getIntegerArrayList(ORIGIN_VIEW_SCREEN_POSITION_KEY)
             unsplashItem = it.getSerializable(UNSPLASH_ITEM_KEY) as UnsplashItem
-            originViewScreenPos.set(originViewScreenPosArray[0], originViewScreenPosArray[1], originViewScreenPosArray[2], originViewScreenPosArray[3])
+            if (originViewScreenPosArray != null) {
+                originViewScreenPos.set(originViewScreenPosArray[0], originViewScreenPosArray[1], originViewScreenPosArray[2], originViewScreenPosArray[3])
+            }
         }
     }
 

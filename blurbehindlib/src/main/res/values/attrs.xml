@@ -5,7 +5,8 @@
         <attr name="useTextureView" format="boolean" />
         <attr name="blurRadius" format="float" />
         <attr name="blurTextureScale" format="float" />
-
+        <attr name="blurPaddingVertical" format="float" />
+        <attr name="useChildAlphaAsMask" format="boolean" />
         <attr name="updateMode" format="enum">
             <enum name="continuously" value="0" />
             <enum name="onScroll" value="1" />

@@ -73,7 +73,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
                     animateCardPosition(1f)
                     animateCardSize(targetSize)
                     animateCardCornerRadius(0f)
-                    scaleBackgroundView(BACKGROUND_VIEWS_SCALED_DOWN_SIZE, 0.5f, scaleInterpolator, -1.5f)
+                    scaleBackgroundView(BACKGROUND_VIEWS_SCALED_DOWN_SIZE, 0.5f, scaleInterpolator, -1.65f)
                     fadeCardViewTextViews(0.0f, 0)
                     animateTextContainer()
                     isEnterAnimating = true
@@ -95,7 +95,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
         animateCardSize(originSize)
         animateCardCornerRadius(cardRootView.resources.getDimension(R.dimen.card_view_corner_radius))
         fadeCardViewTextViews(1.0f, MOVE_DURATION - FADE_TEXT_DURATION)
-        scaleBackgroundView(1f, 0.3f, scaleInterpolator, -0.7f)
+        scaleBackgroundView(1f, 0.3f, scaleInterpolator, -0.9f)
         ObjectAnimator.ofFloat(textContainer, View.ALPHA, textContainer.alpha, 0f).setDuration((MOVE_DURATION * 0.4f).toLong()).start(runningAnimations)
     }
 
@@ -140,8 +140,8 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
         val appBarBlur = activity?.findViewById<BlurBehindLayout>(R.id.appBarBlurLayout)
         val navBarBlur = activity?.findViewById<BlurBehindLayout>(R.id.navigationBarBlurLayout)
 
-        ObjectAnimator.ofFloat(appBarDimmer, View.ALPHA, 0f, 1f).setDuration(FADE_BARS_DURATION).start(runningAnimations)
-        ObjectAnimator.ofFloat(navBarDimmer, View.ALPHA, 0f, 1f).setDuration(FADE_BARS_DURATION).onEnd {
+        ObjectAnimator.ofFloat(appBarDimmer, View.ALPHA, 0f, 1f).setDuration(MOVE_DURATION).start(runningAnimations)
+        ObjectAnimator.ofFloat(navBarDimmer, View.ALPHA, 0f, 1f).setDuration(MOVE_DURATION).onEnd {
             appBarBlur?.disable()
             navBarBlur?.disable()
         }.start(runningAnimations)
@@ -154,11 +154,9 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
         val navBarBlur = activity.findViewById<BlurBehindLayout>(R.id.navigationBarBlurLayout)
         appBarBlur?.enable()
         navBarBlur?.enable()
-
-        ObjectAnimator.ofFloat(appBarDimmer, View.ALPHA, appBarDimmer.alpha, 0f).setDuration(MOVE_DURATION).onStart {
-            appBarBlur?.updateForMilliSeconds(MOVE_DURATION / 2)
-            navBarBlur?.updateForMilliSeconds(MOVE_DURATION / 2)
-        }.start(runningAnimations)
+        appBarBlur?.updateForMilliSeconds(MOVE_DURATION)
+        navBarBlur?.updateForMilliSeconds(MOVE_DURATION)
+        ObjectAnimator.ofFloat(appBarDimmer, View.ALPHA, appBarDimmer.alpha, 0f).setDuration(MOVE_DURATION).start(runningAnimations)
         ObjectAnimator.ofFloat(navBarDimmer, View.ALPHA, appBarDimmer.alpha, 0f).setDuration(MOVE_DURATION).onEnd {
             navBarDimmer?.visibility = View.GONE
             appBarDimmer.visibility = View.GONE
@@ -245,8 +243,8 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
                         //Little trick to give the impression ov some air resistance making the view flip slightly :)
                         val targetScaleForEasedRotation = (scale - BACKGROUND_VIEWS_SCALED_DOWN_SIZE) * 200f
                         val time = frameRateCounter.timeStep()
-                        val easeAmount = ((targetScaleForEasedRotation - easedScale) * time) * 15f
-                        easedScaleOffset += (easeAmount - easedScaleOffset) * time * 20f
+                        val easeAmount = ((targetScaleForEasedRotation - easedScale) * time) * 20f
+                        easedScaleOffset += (easeAmount - easedScaleOffset) * time * 25f
                         backgroundView.rotationX = easedScaleOffset * rotateAmount
                         easedScale += easeAmount
                     }
