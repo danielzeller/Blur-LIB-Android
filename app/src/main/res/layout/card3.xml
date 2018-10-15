@@ -12,7 +12,6 @@
         android:clipChildren="true"
         app:cardBackgroundColor="@android:color/white"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
-        app:cardElevation="14dp"
         app:cardPreventCornerOverlap="false"
         app:layout_constraintDimensionRatio="1:0.5"
         app:layout_constraintEnd_toEndOf="parent"

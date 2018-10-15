@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    tools:context=".DetailsFragment">
+    tools:context=".fragments.DetailsFragment">
 
 
     <no.danielzeller.blurbehindlib.BlurBehindLayout

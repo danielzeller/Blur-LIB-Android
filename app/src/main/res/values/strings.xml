@@ -7,16 +7,19 @@
         <item>Germany is planning a gexit</item>
         <item>I\'m a heading</item>
         <item>Merkeler has a new hobby</item>
+        <item>Show dialog</item>
 
         <item>Stump says geese are no longer wanted in the U.S</item>
         <item>Denmark is building a canal</item>
         <item>New York needs coffe</item>
         <item>Google is selling Android</item>
+        <item>GitHub</item>
 
         <item>It\'s finally hip to strip?</item>
         <item>Well I\'m certainly a heading</item>
         <item>Me too</item>
         <item>Woouoo</item>
+        <item>Say Hello</item>
     </string-array>
 
     <string-array name="sub_headings">
@@ -24,16 +27,17 @@
         <item>BREAKING NEWS</item>
         <item> </item>
         <item> </item>
-
+        <item>Shows a dialog where blurring is clipped to the ChildView Alpha channel.</item>
         <item>POLITICS</item>
         <item>WORLD</item>
         <item> </item>
         <item> </item>
-
+        <item>Checkout some other fun project on my GitHub Page.</item>
         <item>LIFESTYLE</item>
         <item>BREAKING NEWS</item>
         <item>Me too</item>
         <item>Woouoo</item>
+        <item>Come say hi to the dev over at http://danielzeller.no</item>
     </string-array>
 
     <string-array name="articles_content">
@@ -55,4 +59,9 @@
     </string-array>
 
     <string name="author_text">By <a href="https://danielzeller.no">Daniel Zeller</a> on Oct 122, 2018, 6:00am EDT</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dialog_heading">Dialog Heading</string>
+    <string name="dialog_text">Hi, I\'m a dialog. The BlurBehindLayout has set useChildAlphaAsMask=true so that the blurring is clipped to the alpha of the first child within the layout.</string>
 </resources>

@@ -12,7 +12,7 @@ import no.danielzeller.blurbehindlib.*
 import no.danielzeller.blurbehindlib.opengl.*
 
 
-class CommonRenderer(private val context: Context, internal val scale: Float, var useChildAlphaAsMask: Boolean, val paddingVertical:Float) {
+class CommonRenderer(private val context: Context, internal val scale: Float, var useChildAlphaAsMask: Boolean, val paddingVertical: Float) {
 
     var behindViewSurfaceTexture = ViewSurfaceTexture()
     var childViewSurfaceTexture = ViewSurfaceTexture()
@@ -24,6 +24,7 @@ class CommonRenderer(private val context: Context, internal val scale: Float, va
 
     private val fullscreenTextureShader = TextureShaderProgram(R.raw.vertex_shader, R.raw.texture_frag)
     private val fullscreenMaskTextureShader = TextureShaderProgram(R.raw.vertex_shader, R.raw.texture_and_mask_frag)
+
     private val gauss2PassHorizontal = TextureShaderProgram(R.raw.vertex_shader, R.raw.gauss_2_pass_horizontal)
     private val gauss2PassVertical = TextureShaderProgram(R.raw.vertex_shader, R.raw.gauss_2_pass_vertical)
     private var renderTextureHorizontal = RenderTexture()
@@ -81,14 +82,10 @@ class CommonRenderer(private val context: Context, internal val scale: Float, va
         if (useChildAlphaAsMask) {
             renderFullscreenTexture(fullscreenMaskTextureShader)
         } else {
-            copyViewTextureToRT()
             renderFullscreenTexture(fullscreenTextureShader)
         }
     }
 
-    private fun copyViewTextureToRT() {
-
-    }
 
     private fun renderFullscreenTexture(shader: TextureShaderProgram) {
         setupViewPort(width, height, paddingVertical)
@@ -146,6 +143,7 @@ class CommonRenderer(private val context: Context, internal val scale: Float, va
         GLES20.glDeleteProgram(fullscreenMaskTextureShader.program)
         GLES20.glDeleteProgram(gauss2PassHorizontal.program)
         GLES20.glDeleteProgram(gauss2PassVertical.program)
+
         behindViewSurfaceTexture.releaseSurface()
         renderTextureHorizontal.deleteAllTextures()
         renderTextureVertical.deleteAllTextures()

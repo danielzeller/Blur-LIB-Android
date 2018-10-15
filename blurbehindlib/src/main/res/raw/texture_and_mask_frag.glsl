@@ -14,5 +14,5 @@ void main()
         discard;
     }
     vec4 color = texture2D(u_TextureUnit, v_TextureCoordinates);
-    gl_FragColor =color;
+    gl_FragColor =vec4(mix(color.rgb,mask.rgb,mask.a).rgb,1.0);
 }

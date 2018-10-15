@@ -25,10 +25,11 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, private val supportFrag
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        if (viewType == R.layout.card4) {
-            return CardViewHolder(v)
+
+        if (viewType == R.layout.card1) {
+            return TextOnlyViewHolder(v)
         }
-        return CardViewHolder2(v)
+        return CardViewHolder(v)
     }
 
     override fun getItemCount(): Int {
@@ -41,27 +42,30 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, private val supportFrag
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
-        val viewHolder: CardViewHolder
-        if (holder.itemViewType == R.layout.card4) {
-            viewHolder = holder as CardViewHolder
-        } else {
-            viewHolder = holder as CardViewHolder2
-            viewHolder.subHeading.text = item.subHeading
-        }
+        var viewHolder = holder as TextOnlyViewHolder
+
+        viewHolder.subHeading.text = item.subHeading
         viewHolder.heading.text = item.heading
 
-        setupImageView(viewHolder, item)
-        setupOnClickListener(viewHolder, item)
+        if (holder is CardViewHolder) {
+            setupImageView(holder, item)
+            setupCardOnClickListener(holder, item)
+        } else {
+            setupTextOnClickListener(holder, item)
+        }
     }
 
-    private fun setupOnClickListener(viewHolder: CardViewHolder, item: UnsplashItem) {
+    private fun setupCardOnClickListener(viewHolder: CardViewHolder, item: UnsplashItem) {
         viewHolder.itemView.setOnClickListener {
             if (viewHolder.progressBar.visibility != View.VISIBLE) {
-                val detailsFragment = DetailsFragment.newInstance(viewHolder.itemView, item)
-                supportFragmentManager.beginTransaction().add(R.id.overlayFragmentContainer, detailsFragment, DETAILS_FRAGMENT_TAG).commitNow()
-                viewHolder.itemView.visibility = View.INVISIBLE
-                viewHolder.itemView.tag = ORIGIN_VIEW_TAG
+                (item.action as ((itemView: View, item: UnsplashItem) -> Unit)).invoke(viewHolder.itemView, item)
             }
+        }
+    }
+
+    private fun setupTextOnClickListener(viewHolder: TextOnlyViewHolder, item: UnsplashItem) {
+        viewHolder.itemView.setOnClickListener {
+            (item.action as (() -> Unit)).invoke()
         }
     }
 
@@ -81,6 +85,7 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, private val supportFrag
         val loaderRef = WeakReference<View>(viewHolder.progressBar)
         val imageRef = WeakReference<ScaleInImageView>(viewHolder.image)
         viewHolder.progressBar.visibility = View.VISIBLE
+        viewHolder.progressBar.alpha = 1f
         viewModel.picasso.load(item.imageUrl).config(Bitmap.Config.HARDWARE).into(viewHolder.image, object : Callback {
             override fun onSuccess() {
                 if (loaderRef.get() != null) {
@@ -90,29 +95,28 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, private val supportFrag
             }
 
             override fun onError(e: Exception?) {
-                loaderRef.get()?.visibility = View.GONE
             }
         })
     }
 
-    inner class CardViewHolder2(view: View) : CardViewHolder(view) {
+    open inner class TextOnlyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val heading: TextView
         val subHeading: TextView
 
         init {
+            heading = view.heading
             subHeading = view.subHeading
         }
     }
 
-    open inner class CardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class CardViewHolder(view: View) : TextOnlyViewHolder(view) {
         val image: ScaleInImageView
-        val heading: TextView
         val progressBar: View
         val progressBarImage: ImageView
 
         init {
             image = view.image
-            heading = view.heading
-            progressBar = view.progressView
+            progressBar = view.findViewById(R.id.progressView)
             progressBarImage = view.loader
         }
     }

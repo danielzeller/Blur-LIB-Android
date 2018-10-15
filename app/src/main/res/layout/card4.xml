@@ -12,7 +12,6 @@
         android:clipChildren="true"
         app:cardBackgroundColor="@android:color/white"
         app:cardCornerRadius="@dimen/card_view_corner_radius"
-        app:cardElevation="14dp"
         app:cardPreventCornerOverlap="false"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,6 +36,12 @@
             android:paddingEnd="@dimen/grid_item_horizontal_space"
             android:paddingBottom="24dp"
             android:textAppearance="@style/H2" />
+
+        <TextView
+            android:id="@+id/subHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <include
             layout="@layout/loader_view"

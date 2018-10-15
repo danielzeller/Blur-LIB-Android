@@ -1,4 +1,4 @@
-package no.danielzeller.blurbehind
+package no.danielzeller.blurbehind.fragments
 
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.*
@@ -13,6 +13,8 @@ import kotlinx.android.synthetic.main.card2.view.*
 import kotlinx.android.synthetic.main.fragment_details.view.*
 import no.danielzeller.blurbehind.model.UnsplashItem
 import kotlinx.android.synthetic.main.activity_main.view.*
+import no.danielzeller.blurbehind.R
+import no.danielzeller.blurbehind.UnsplashViewModel
 import no.danielzeller.blurbehind.animation.CardTransitionHelper
 import no.danielzeller.blurbehind.animation.MOVE_DURATION
 import no.danielzeller.blurbehindlib.ScreenRectUtil

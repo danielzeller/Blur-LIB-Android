@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.DialogFragment">
+
+    <no.danielzeller.blurbehindlib.BlurBehindLayout
+        android:id="@+id/dialogBlurView"
+        android:layout_width="310dp"
+        android:layout_height="260dp"
+        android:clipToPadding="false"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:updateMode="manually"
+        app:blurPaddingVertical="0.0"
+        app:blurRadius="170.0"
+        app:blurTextureScale="0.25"
+        app:useChildAlphaAsMask="true"
+        app:useTextureView="true" >
+
+        <LinearLayout
+            android:id="@+id/blurViewFirstChild"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corners_drawable"
+            android:layerType="hardware"
+            android:padding="@dimen/grid_item_horizontal_space"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:elevation="50dp">
+
+
+            <TextView
+                android:id="@+id/dialogHeading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:paddingBottom="15dp"
+                android:text="@string/dialog_heading"
+                android:textAppearance="@style/H1" />
+
+            <TextView
+                android:id="@+id/dialogText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/dialog_text"
+                android:textAppearance="@style/Body" />
+
+        </LinearLayout>
+    </no.danielzeller.blurbehindlib.BlurBehindLayout>
+</android.support.constraint.ConstraintLayout>

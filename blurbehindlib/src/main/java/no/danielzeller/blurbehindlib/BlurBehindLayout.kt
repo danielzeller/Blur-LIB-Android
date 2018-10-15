@@ -1,6 +1,5 @@
 package no.danielzeller.blurbehindlib
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -92,7 +91,6 @@ class BlurBehindLayout : FrameLayout {
     private var updateViewUntil = -1L
     private var isBlurDisabled = false
     private var paddingVertical = 0f
-    private var blurBehindViewID =-1
 
     constructor(context: Context, useTextureView: Boolean, blurTextureScale: Float) : super(context) {
         this.blurTextureScale = blurTextureScale
@@ -235,7 +233,7 @@ class BlurBehindLayout : FrameLayout {
     }
 
     private var frameCallBack = Choreographer.FrameCallback {
-        redrawBlurTexture()
+        redrawBlurTexture() 
     }
 
     private fun renderBehindViewToTexture() {
@@ -247,7 +245,7 @@ class BlurBehindLayout : FrameLayout {
         viewBehind?.getHitRect(viewBehindRect)
         getHitRect(thisViewRect)
         glCanvas?.scale(commonRenderer.scale, commonRenderer.scale)
-        glCanvas?.translate((thisViewRect.left - viewBehindRect.left).toFloat(), (viewBehindRect.top - thisViewRect.top + paddingVertical * 0.5f))
+        glCanvas?.translate((viewBehindRect.left - thisViewRect.left).toFloat(), (viewBehindRect.top - thisViewRect.top + paddingVertical * 0.5f))
 
         viewBehind?.draw(glCanvas)
 
@@ -257,13 +255,23 @@ class BlurBehindLayout : FrameLayout {
     private fun renderChildViewToTexture() {
         if (useChildAlphaAsMask) {
             if (childCount > 1) {
+                val chilView = getChildAt(1)
+                /**
+                 * Since the openGL drawing is falling a couple of frames behind the regular UI drawing
+                 * we render the child in openGL instead of the regular UI drawcall, so that it is
+                 * synced with the openGL drawCommands.
+                 */
+                if (chilView.visibility != INVISIBLE) {
+                    chilView.visibility = INVISIBLE
+                }
                 val commonRenderer = commonRenderer!!
                 val glCanvas = commonRenderer.childViewSurfaceTexture.beginDraw()
 
-                glCanvas?.scale(1f,  height.toFloat()/(height.toFloat() + paddingVertical) )
-                glCanvas?.translate(0f, paddingVertical/2f )
+                glCanvas?.scale(1f, height.toFloat() / (height.toFloat() + paddingVertical))
+                glCanvas?.translate(0f, paddingVertical / 2f)
                 glCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-                drawChild(glCanvas, getChildAt(1), drawingTime)
+
+                drawChild(glCanvas, chilView, drawingTime)
                 commonRenderer.childViewSurfaceTexture.endDraw(glCanvas)
             }
         }
