@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_corners_drawable"
             android:layerType="hardware"
-            android:padding="@dimen/grid_item_horizontal_space"
+            android:padding="32dp"
             android:orientation="vertical"
             android:layout_gravity="center"
             android:elevation="50dp">

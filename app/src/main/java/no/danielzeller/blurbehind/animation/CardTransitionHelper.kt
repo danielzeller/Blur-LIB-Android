@@ -243,7 +243,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
                         //Little trick to give the impression ov some air resistance making the view flip slightly :)
                         val targetScaleForEasedRotation = (scale - BACKGROUND_VIEWS_SCALED_DOWN_SIZE) * 200f
                         val time = frameRateCounter.timeStep()
-                        val easeAmount = ((targetScaleForEasedRotation - easedScale) * time) * 20f
+                        val easeAmount = ((targetScaleForEasedRotation - easedScale) * time) * 25f
                         easedScaleOffset += (easeAmount - easedScaleOffset) * time * 25f
                         backgroundView.rotationX = easedScaleOffset * rotateAmount
                         easedScale += easeAmount

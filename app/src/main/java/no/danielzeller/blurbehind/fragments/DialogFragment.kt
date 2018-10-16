@@ -48,7 +48,7 @@ class DialogFragment : Fragment(), View.OnTouchListener {
         rootView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
 
-                scaleBackgroundView(1f, 0.3f, scaleInterpolator, -0.9f)
+                scaleBackgroundView(1f, 0.3f, scaleInterpolator, -1.2f)
                 rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 ObjectAnimator.ofFloat(blurView, View.ALPHA, 0f, 1f).setDuration(ANIM_DURATION / 2).delay(50).start()
                 blurView.updateForMilliSeconds(ANIM_DURATION)
@@ -66,7 +66,7 @@ class DialogFragment : Fragment(), View.OnTouchListener {
         if (!isExitAnimating) {
             isExitAnimating = true
             blurView.updateForMilliSeconds(ANIM_DURATION)
-            scaleBackgroundView(SCALED_DOWN_SIZE, 0.5f, scaleInterpolator, -1.2f)
+            scaleBackgroundView(SCALED_DOWN_SIZE, 0.5f, scaleInterpolator, -1.5f)
             ObjectAnimator.ofFloat(blurView, View.ALPHA, 1f, 0f).setDuration(ANIM_DURATION).onEnd {
                 fragmentManager?.beginTransaction()?.remove(this)?.commit()
             }.start()
@@ -92,7 +92,7 @@ class DialogFragment : Fragment(), View.OnTouchListener {
                         val targetScaleForEasedRotation = (scale - SCALED_DOWN_SIZE) * 200f
                         val time = frameRateCounter.timeStep()
                         val easeAmount = ((targetScaleForEasedRotation - easedScale) * time) * 20f
-                        easedScaleOffset += (easeAmount - easedScaleOffset) * time * 25f
+                        easedScaleOffset += (easeAmount - easedScaleOffset) * time * 30f
                         blurViewContent.rotationX = easedScaleOffset * rotateAmount
                         easedScale += easeAmount
                     }
