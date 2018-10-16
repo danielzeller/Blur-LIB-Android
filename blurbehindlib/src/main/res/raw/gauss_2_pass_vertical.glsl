@@ -3,12 +3,12 @@ precision mediump float;
 
 
 varying vec2 v_TextureCoordinates;
-uniform sampler2D u_TextureUnit;
+uniform sampler2D mainTexture;
 uniform int blurRadius;
 
 
-uniform float uWidthOffset;
-uniform float uHeightOffset;
+uniform float textureWidth;
+uniform float textureHeight;
 uniform float scale;
 
 mediump float getGaussWeight(mediump float currentPos, mediump float sigma)
@@ -25,8 +25,8 @@ void main() {
     int step = int(float( blurRadius/15)*scale)+1;
 
     for(int i = 0; i < diameter; i+=step) {
-        vec2 offset = vec2(float(i - blurRadius) * uWidthOffset,  float(i - blurRadius) * uHeightOffset);
-        sampleTex = vec4(texture2D(u_TextureUnit, v_TextureCoordinates.st+offset));
+        vec2 offset = vec2(float(i - blurRadius) * textureWidth,  float(i - blurRadius) * textureHeight);
+        sampleTex = vec4(texture2D(mainTexture, v_TextureCoordinates.st+offset));
         float index = float(i);
         float gaussWeight = getGaussWeight(index - float(diameter - 1)/2.0,  (float(diameter - 1)/2.0 + 1.0) / 2.0);
         col += sampleTex * gaussWeight;

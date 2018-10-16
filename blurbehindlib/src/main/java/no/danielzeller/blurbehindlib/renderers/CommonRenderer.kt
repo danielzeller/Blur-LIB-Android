@@ -94,7 +94,7 @@ class CommonRenderer(private val context: Context, internal val scale: Float, va
 
         GLES20.glActiveTexture(GLES30.GL_TEXTURE0)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, renderTextureVertical.fboTex)
-        GLES20.glUniform1i(GLES20.glGetUniformLocation(shader.program, "u_TextureUnit"), 0)
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(shader.program, "mainTexture"), 0)
 
         if (useChildAlphaAsMask) {
             childViewSurfaceTexture.updateTexture()
@@ -120,14 +120,14 @@ class CommonRenderer(private val context: Context, internal val scale: Float, va
         } else {
             GLES30.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, bindTextureID)
         }
-        GLES20.glUniform1i(GLES20.glGetUniformLocation(blurShader.program, "u_TextureUnit"), 0)
+        GLES20.glUniform1i(GLES20.glGetUniformLocation(blurShader.program, "mainTexture"), 0)
 
         if (isVerticalPass) {
-            GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uWidthOffset"), 1f / width.toFloat() / scale)
-            GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uHeightOffset"), 0f)
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "textureWidth"), 1f / width.toFloat() / scale)
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "textureHeight"), 0f)
         } else {
-            GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uWidthOffset"), 0f)
-            GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "uHeightOffset"), 1f / height.toFloat() / scale)
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "textureWidth"), 0f)
+            GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "textureHeight"), 1f / height.toFloat() / scale)
         }
 
         GLES20.glUniform1f(GLES20.glGetUniformLocation(blurShader.program, "scale"), scale)

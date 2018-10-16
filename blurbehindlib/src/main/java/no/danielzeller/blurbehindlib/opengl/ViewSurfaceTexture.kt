@@ -20,15 +20,15 @@ class ViewSurfaceTexture {
 
     fun createSurface(width: Int, height: Int) {
 
-            textureWidth = width
-            textureHeight = height
-            releaseSurface()
-            surfaceTextureID = createTexture()
-            if (surfaceTextureID > 0) {
-                surfaceTexture = SurfaceTexture(surfaceTextureID)
-                surfaceTexture!!.setDefaultBufferSize(textureWidth, textureHeight)
-                surface = Surface(surfaceTexture)
-            }
+        textureWidth = width
+        textureHeight = height
+        releaseSurface()
+        surfaceTextureID = createTexture()
+        if (surfaceTextureID > 0) {
+            surfaceTexture = SurfaceTexture(surfaceTextureID)
+            surfaceTexture!!.setDefaultBufferSize(textureWidth, textureHeight)
+            surface = Surface(surfaceTexture)
+        }
     }
 
     fun updateTexture() {
@@ -45,11 +45,7 @@ class ViewSurfaceTexture {
     fun beginDraw(): Canvas? {
 
         if (surface != null) {
-            try {
-                return surface?.lockHardwareCanvas()
-            } catch (e: Exception) {
-                Log.e("GL_ERROR", "error while rendering view to gl: $e")
-            }
+            return surface?.lockHardwareCanvas()
         }
         return null
     }

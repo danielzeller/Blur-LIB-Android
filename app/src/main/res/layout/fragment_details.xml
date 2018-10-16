@@ -48,11 +48,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:autoLink="all"
+            android:linksClickable="true"
             android:drawableStart="@drawable/ic_author"
             android:drawablePadding="@dimen/grid_item_horizontal_space"
             android:fontFamily="sans-serif-light"
             android:gravity="center_vertical|start"
-            android:linksClickable="true"
             android:paddingHorizontal="@dimen/grid_item_horizontal_space"
             android:text="@string/author_text"
             android:textColor="@android:color/white"
@@ -63,6 +63,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/grid_item_horizontal_space"
+            android:autoLink="all"
+            android:lineSpacingExtra="2dp"
+            android:linksClickable="true"
             android:textAppearance="@style/Body" />
     </LinearLayout>
 </FrameLayout>

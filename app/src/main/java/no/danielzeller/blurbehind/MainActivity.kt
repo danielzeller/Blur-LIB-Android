@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         val articleContent = resources.getStringArray(R.array.articles_content)
         var cardTypeIndex = 0
         for (i in 0 until CARDS_COUNT) {
-            items.add(UnsplashItem(UNSPLASH_RANDOM_URL + i, headings[i], subHeadings[i], cardsLayouts[cardTypeIndex], articleContent[0], getClickUnit(cardsLayouts[cardTypeIndex])))
+            items.add(UnsplashItem(UNSPLASH_RANDOM_URL + i, headings[i], subHeadings[i], cardsLayouts[cardTypeIndex], articleContent[i], getClickUnit(cardsLayouts[cardTypeIndex])))
 
             cardTypeIndex += 1
             if (cardTypeIndex == cardsLayouts.size) cardTypeIndex = 0

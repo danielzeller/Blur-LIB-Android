@@ -1,7 +1,7 @@
 #extension GL_OES_EGL_image_external : require
 precision mediump float;
 
-uniform sampler2D u_TextureUnit;
+uniform sampler2D mainTexture;
 uniform samplerExternalOES maskTexture;
 varying vec2 v_TextureCoordinates;
 
@@ -13,6 +13,6 @@ void main()
     if(mask.a<0.05){
         discard;
     }
-    vec4 color = texture2D(u_TextureUnit, v_TextureCoordinates);
+    vec4 color = texture2D(mainTexture, v_TextureCoordinates);
     gl_FragColor =vec4(mix(color.rgb,mask.rgb,mask.a).rgb,1.0);
 }
