@@ -1,9 +1,9 @@
 package no.danielzeller.blurbehind
 
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.graphics.Bitmap
 import android.graphics.drawable.Animatable
-import android.support.v4.app.FragmentManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +21,7 @@ import java.lang.Exception
 import java.lang.ref.WeakReference
 
 
-class UnsplashGridAdapter(val items: List<UnsplashItem>, private val supportFragmentManager: FragmentManager, private val viewModel: UnsplashViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class UnsplashGridAdapter(val items: List<UnsplashItem>, private val viewModel: UnsplashViewModel, val clickUnits: List<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -58,14 +58,14 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, private val supportFrag
     private fun setupCardOnClickListener(viewHolder: CardViewHolder, item: UnsplashItem) {
         viewHolder.itemView.setOnClickListener {
             if (viewHolder.progressBar.visibility != View.VISIBLE) {
-                (item.action as ((itemView: View, item: UnsplashItem) -> Unit)).invoke(viewHolder.itemView, item)
+                (clickUnits[0] as ((itemView: View, item: UnsplashItem) -> Unit)).invoke(viewHolder.itemView, item)
             }
         }
     }
 
     private fun setupTextOnClickListener(viewHolder: TextOnlyViewHolder, item: UnsplashItem) {
         viewHolder.itemView.setOnClickListener {
-            (item.action as (() -> Unit)).invoke()
+            (clickUnits[item.clickUnitIndex] as (() -> Unit)).invoke()
         }
     }
 
@@ -82,15 +82,21 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, private val supportFrag
     }
 
     private fun loadImage(viewHolder: CardViewHolder, item: UnsplashItem) {
-        val loaderRef = WeakReference<View>(viewHolder.progressBar)
-        val imageRef = WeakReference<ScaleInImageView>(viewHolder.image)
+        val viewHolderRef = WeakReference<CardViewHolder>(viewHolder)
+
+        viewHolder.fadeInAnimation?.cancel()
         viewHolder.progressBar.visibility = View.VISIBLE
         viewHolder.progressBar.alpha = 1f
+        viewHolder.image.cancelIntroAnim()
+
         viewModel.picasso.load(item.imageUrl).config(Bitmap.Config.HARDWARE).into(viewHolder.image, object : Callback {
             override fun onSuccess() {
-                if (loaderRef.get() != null) {
-                    ObjectAnimator.ofFloat(loaderRef.get(), View.ALPHA, 1f, 0f).delay(50).setDuration(450).onEnd { loaderRef.get()?.visibility = View.GONE }.start()
-                    imageRef.get()?.introAnimate()
+                if (viewHolderRef.get() != null) {
+                    val viewHolder = viewHolderRef.get()!!
+                    val fadeAnim = ObjectAnimator.ofFloat(viewHolder.progressBar, View.ALPHA, 1f, 0f).delay(50).setDuration(450).onEnd { viewHolder.progressBar.visibility = View.GONE }
+                    viewHolder.fadeInAnimation = fadeAnim
+                    fadeAnim.start()
+                    viewHolder.image.introAnimate()
                 }
             }
 
@@ -113,6 +119,7 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, private val supportFrag
         val image: ScaleInImageView
         val progressBar: View
         val progressBarImage: ImageView
+        var fadeInAnimation: ValueAnimator? = null
 
         init {
             image = view.image

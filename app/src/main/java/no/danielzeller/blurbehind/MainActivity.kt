@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProviders.of(this).get(UnsplashViewModel::class.java)
         viewModel.createPicasso(this)
-        val unsplashGridAdapter = UnsplashGridAdapter(createUnsplashItems(), supportFragmentManager, viewModel)
+        val unsplashGridAdapter = UnsplashGridAdapter(createUnsplashItems(), viewModel, listOf<Any>(cardClickedUnit, textClickedAction1, textClickedAction2, textClickedAction3))
 
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(p0: Int): Int {
@@ -82,7 +82,24 @@ class MainActivity : AppCompatActivity() {
         return layoutParams
     }
 
-    val cardClickedUnit: ((itemView: View, item: UnsplashItem) -> Unit) = { itemView: View, item: UnsplashItem ->
+    private val textClickedAction1: (() -> Unit) = {
+        if (!isDialogVisible()) {
+            val dialogfragment = DialogFragment()
+            supportFragmentManager.beginTransaction().add(R.id.overlayFragmentContainer, dialogfragment, DIALOG_FRAGMENT_TAG).commitNow()
+        }
+    }
+
+    private val textClickedAction2: (() -> Unit) = {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danielzeller"))
+        startActivity(browserIntent)
+    }
+
+    private val textClickedAction3: (() -> Unit) = {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://danielzeller.no"))
+        startActivity(browserIntent)
+    }
+
+    private val cardClickedUnit: ((itemView: View, item: UnsplashItem) -> Unit) = { itemView: View, item: UnsplashItem ->
         if (!isDialogVisible()) {
             val detailsFragment = DetailsFragment.newInstance(itemView, item)
             supportFragmentManager.beginTransaction().add(R.id.overlayFragmentContainer, detailsFragment, DETAILS_FRAGMENT_TAG).commitNow()
@@ -90,37 +107,19 @@ class MainActivity : AppCompatActivity() {
             itemView.tag = ORIGIN_VIEW_TAG
         }
     }
+    private var texClickedIndex = 0
 
-    val textClickedAction1: (() -> Unit) = {
-        if (!isDialogVisible()) {
-            val dialogfragment = DialogFragment()
-            supportFragmentManager.beginTransaction().add(R.id.overlayFragmentContainer, dialogfragment, DIALOG_FRAGMENT_TAG).commitNow()
+    private fun getClickUnit(clickType: Int): Int {
+        if (clickType == R.layout.card1) {
+            texClickedIndex += 1
+            return texClickedIndex
         }
+        return 0
     }
 
     private fun isDialogVisible() =
             supportFragmentManager.findFragmentByTag(DIALOG_FRAGMENT_TAG) != null
 
-    val textClickedAction2: (() -> Unit) = {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danielzeller"))
-        startActivity(browserIntent)
-    }
-
-    val textClickedAction3: (() -> Unit) = {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://danielzeller.no"))
-        startActivity(browserIntent)
-    }
-
-    private val units = listOf<Any>(cardClickedUnit, textClickedAction1, textClickedAction2, textClickedAction3)
-    private var texClickedIndex = 0
-
-    private fun getClickUnit(clickType: Int): Any {
-        if (clickType == R.layout.card1) {
-            texClickedIndex += 1
-            return units[texClickedIndex]
-        }
-        return units[0]
-    }
 
     override fun onBackPressed() {
         var exitApp = true

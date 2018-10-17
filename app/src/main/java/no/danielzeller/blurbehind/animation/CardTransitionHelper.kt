@@ -86,7 +86,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
     private var textContainerOffset = 0f
     private fun animateTextContainer() {
         ObjectAnimator.ofFloat(textContainer, View.ALPHA, textContainer.alpha, 1f).setDuration((MOVE_DURATION *0.6f).toLong()).delay((MOVE_DURATION *0.4f).toLong()).interpolate(moveInterpolator).start(runningAnimations)
-        ValueAnimator.ofFloat(-textContainer.height.toFloat(), 0f).setDuration(MOVE_DURATION).interpolate(moveInterpolator).onUpdate { anim -> textContainerOffset = anim as Float }.start(runningAnimations)
+        ValueAnimator.ofFloat(-textContainer.height.toFloat()/2f, 0f).setDuration(MOVE_DURATION).interpolate(moveInterpolator).onUpdate { anim -> textContainerOffset = anim as Float }.start(runningAnimations)
     }
 
     fun animateCardOut() {
@@ -243,7 +243,7 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
                         //Little trick to give the impression ov some air resistance making the view flip slightly :)
                         val targetScaleForEasedRotation = (scale - BACKGROUND_VIEWS_SCALED_DOWN_SIZE) * 200f
                         val time = frameRateCounter.timeStep()
-                        val easeAmount = ((targetScaleForEasedRotation - easedScale) * time) * 25f
+                        val easeAmount = ((targetScaleForEasedRotation - easedScale) * time) * 20f
                         easedScaleOffset += (easeAmount - easedScaleOffset) * time * 25f
                         backgroundView.rotationX = easedScaleOffset * rotateAmount
                         easedScale += easeAmount
