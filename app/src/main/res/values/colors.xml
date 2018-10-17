@@ -7,4 +7,9 @@
     <color name="dark_grey">#1A1E1F</color>
     <color name="white">#FFFFFF</color>
 
+
+    <color name="progressColor1">#eebe3e</color>
+    <color name="progressColor2">#ee7966</color>
+    <color name="progressColor3">#8dd3ce</color>
+
 </resources>

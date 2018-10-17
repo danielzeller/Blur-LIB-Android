@@ -11,5 +11,9 @@
     <dimen name="h2_text_size">14sp</dimen>
     <dimen name="h3_text_size">12sp</dimen>
     <dimen name="heading_padding_top">24dp</dimen>
-
+    <dimen name="progressCircleStrokeWidth">0.8dp</dimen>
+    <dimen name="progressDotRadius">3dp</dimen>
+    <dimen name="progressCircleRadius1">35dp</dimen>
+    <dimen name="progressCircleRadius2">25dp</dimen>
+    <dimen name="progressCircleRadius3">15dp</dimen>
 </resources>

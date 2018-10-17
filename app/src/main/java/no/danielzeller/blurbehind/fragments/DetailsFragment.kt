@@ -93,8 +93,8 @@ class DetailsFragment : Fragment() {
     private fun onExitAnimationComplete() {
         val viewToBlur = activity?.findViewById<View>(R.id.viewToBlur) as ViewGroup
         val originView = viewToBlur.findViewWithTag<View>(ORIGIN_VIEW_TAG)
-        originView.visibility = View.VISIBLE
-        originView.tag = null
+        originView?.visibility = View.VISIBLE
+        originView?.tag = null
         fragmentManager?.beginTransaction()?.remove(this)?.commit()
     }
 
