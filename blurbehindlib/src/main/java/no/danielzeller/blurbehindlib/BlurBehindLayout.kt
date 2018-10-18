@@ -80,6 +80,7 @@ class BlurBehindLayout : FrameLayout {
         }
 
     private val thisViewPosition = intArrayOf(0, 0)
+    private val behindViewPosition = intArrayOf(0, 0)
     private var useTextureView = false
     private var commonRenderer: CommonRenderer? = null
     private var blurTextureScale = 0.4f
@@ -238,12 +239,13 @@ class BlurBehindLayout : FrameLayout {
         val glCanvas = commonRenderer.behindViewSurfaceTexture.beginDraw()
 
         glCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+        viewBehind?.getLocationInWindow(behindViewPosition)
         getLocationInWindow(thisViewPosition)
 
         glCanvas?.scale(commonRenderer.scale, commonRenderer.scale)
         glCanvas?.translate(0f, paddingVertical * 0.5f)
         val behindMatrix = viewBehind?.matrix
-        behindMatrix?.postTranslate(-thisViewPosition[0].toFloat() - paddingLeft, -thisViewPosition[1].toFloat() - paddingTop)
+        behindMatrix?.postTranslate(behindViewPosition[0] - thisViewPosition[0].toFloat() - paddingLeft, behindViewPosition[1] - thisViewPosition[1].toFloat() - paddingTop)
         glCanvas?.concat(behindMatrix)
 
         viewBehind?.draw(glCanvas)
