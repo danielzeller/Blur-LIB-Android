@@ -6,7 +6,7 @@
     <string name="dialog_text">Hi, I\'m a dialog. The BlurBehindLayout has set useChildAlphaAsMask=true so that the blurring is clipped to the alpha of the first child within the layout.</string>
 
     <string-array name="headings">
-        <item>Breaktrough in baldness treatment</item>
+        <item>Breakthrough in baldness treatment</item>
         <item>Germany is planning a gexit</item>
         <item>I\'m a heading</item>
         <item>Merkeler has a new hobby</item>
@@ -14,7 +14,7 @@
 
         <item>Stump says geese are no longer wanted in the U.S</item>
         <item>Denmark is building a canal</item>
-        <item>New York needs coffe</item>
+        <item>New York needs coffee</item>
         <item>Google is selling Android</item>
         <item>GitHub</item>
 
@@ -44,15 +44,15 @@
     </string-array>
 
     <string-array name="articles_content">
-        <item>These days there seems to be even more of a swagger as Ronald Stump strides across the South Lawn to board his green-liveried helicopter, Marine One, with his very real hair flapping in the wind. Stump stated in a public press release that his sole reason for becoming the US presiden, was to fight baldness.
-        \"I feel that every man should have hair, like me\" he therefore issued that 15% of the US national budget should be used on baldness reasearch. \n\nRead more at: <a href="https://danielzeller.no">danielzeller.no</a></item>
-        <item>The Germans, lovers of wienerschnitzel and Cola Weizen are planning a quick withdrawal from the EU. German chancellor Angelica Merkeler stated at a public press conference, that Germans are sick of the rest of the EU\'s low work morale. \"We Germans work at least 10 hours a day without any breaks, while other countries have siestas and luch breaks.\" She makes a call to the rest of EU: \"Start working harder you lazy slobs!\"\n\nRead more at: <a href="https://danielzeller.no">danielzeller.no</a></item>
+        <item>These days there seems to be even more of a swagger as Ronald Stump strides across the South Lawn to board his green-liveried helicopter, Marine One, with his very real hair flapping in the wind. Stump stated in a public press release that his sole reason for becoming the US president, was to fight baldness.
+        \"I feel that every man should have hair, like me\" he therefore issued that 15% of the US national budget should be used on baldness research. \n\nRead more at: <a href="https://danielzeller.no">danielzeller.no</a></item>
+        <item>The Germans, lovers of wienerschnitzel and Cola Weizen are planning a quick withdrawal from the EU. German chancellor Angelica Merkeler stated at a public press conference, that Germans are sick of the rest of the EU\'s low work morale. \"We Germans work at least 10 hours a day without any breaks, while other countries have siestas and lunch breaks.\" She makes a call to the rest of EU: \"Start working harder you lazy slobs!\"\n\nRead more at: <a href="https://danielzeller.no">danielzeller.no</a></item>
         <item>The heading was outraged that nobody had seen his content. \"I\'m a heading, why won\'t nobody read my content.\"\n\nFull story: <a href="https://danielzeller.no">danielzeller.no</a></item>
         <item>German chancellor Angelica Merkeler has a new hobby. She recently started flying drones in the Berlin central area. \"It\'s so fun to fly around peeking into peoples windows with a GoPro camera\" she says, while taking a sip of a cold bananen weizen beer.\n\nRead full story at: <a href="https://danielzeller.no">danielzeller.no</a></item>
         <item> </item>
 
-        <item>Presiden Ronald Stump says in a public press release, that all Geese shall be deported from the US. When he was a child a Goose once bit his thumb. \"It hurt for at least three weeks\" he says wile biting his lips. Besides curing baldness, geese seem to be his main focus at the moment. America is spending millions of dollars trying to figure out how they can prevent the geese from flying back into the country after deportation.\n\nRead more at: <a href="https://danielzeller.no">danielzeller.no</a></item>
-        <item>Denmark is building a canal along the border to Germany. Denmarks chancellor Nils Holgerson says that they have been envious to other contries that are an island for a long time. \"With this canal we will finally be an island just like Iceland and Japan\" he says while eating a bolle.\n\nRead more at: <a href="https://danielzeller.no">danielzeller.no</a></item>
+        <item>President Ronald Stump says in a public press release, that all Geese shall be deported from the US. When he was a child a Goose once bit his thumb. \"It hurt for at least three weeks\" he says wile biting his lips. Besides curing baldness, geese seem to be his main focus at the moment. America is spending millions of dollars trying to figure out how they can prevent the geese from flying back into the country after deportation.\n\nRead more at: <a href="https://danielzeller.no">danielzeller.no</a></item>
+        <item>Denmark is building a canal along the border to Germany. Denmark\'s chancellor Nils Holgerson says that they have been envious to other countries that are an island for a long time. \"With this canal we will finally be an island just like Iceland and Japan\" he says while eating a bolle.\n\nRead more at: <a href="https://danielzeller.no">danielzeller.no</a></item>
         <item>The coffee supplies in New York city have gone dry. New Yorkers have been drinking an average of 50 cups a day for the last 8 months. The reason for this is reportedly that Hipsters no longer exist, they have morphed into whipsters, whom without coffee will turn into regular humans.\n\nRead more at: <a href="https://danielzeller.no">danielzeller.no</a></item>
         <item>The Android developers have been heard. Google is selling Android. In a public press statement, the head of Android engineering Sundae Pistachio says that the developers on the Android team are sick of the old and boring Android code. It\'s just so much work having to deal with all that legacy code. The engineers would rather work on new projects than having to spend countless hours bug fixing issues related to software rendering.\n\nFull story: <a href="https://danielzeller.no">danielzeller.no</a></item>
         <item> </item>

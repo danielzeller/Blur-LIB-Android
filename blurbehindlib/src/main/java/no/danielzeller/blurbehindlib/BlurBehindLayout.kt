@@ -3,11 +3,9 @@ package no.danielzeller.blurbehindlib
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.graphics.Rect
 import android.opengl.GLSurfaceView
 import android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Choreographer
 import android.view.TextureView
 import android.view.View
@@ -81,8 +79,8 @@ class BlurBehindLayout : FrameLayout {
             checkTextureView()
         }
 
-    private val viewBehindRect = Rect()
-    private val thisViewRect = Rect()
+    private val viewBehindPosition = intArrayOf(0, 0)
+    private val thisViewPosition = intArrayOf(0, 0)
     private var useTextureView = false
     private var commonRenderer: CommonRenderer? = null
     private var blurTextureScale = 0.4f
@@ -91,6 +89,7 @@ class BlurBehindLayout : FrameLayout {
     private var updateViewUntil = -1L
     private var isBlurDisabled = false
     private var paddingVertical = 0f
+    private val onScrollChangesListener = ViewTreeObserver.OnScrollChangedListener { updateForMilliSeconds(200) }
 
     constructor(context: Context, useTextureView: Boolean, blurTextureScale: Float) : super(context) {
         this.blurTextureScale = blurTextureScale
@@ -173,7 +172,7 @@ class BlurBehindLayout : FrameLayout {
             updateMode = convertIntToEnum(typedArray.getInteger(R.styleable.Blur_updateMode, updateMode.ordinal))
             blurRadius = typedArray.getFloat(R.styleable.Blur_blurRadius, blurRadius)
             blurTextureScale = typedArray.getFloat(R.styleable.Blur_blurTextureScale, blurTextureScale)
-            paddingVertical = typedArray.getFloat(R.styleable.Blur_blurPaddingVertical, resources.getDimension(R.dimen.default_verticalPaddin))
+            paddingVertical = typedArray.getFloat(R.styleable.Blur_blurPaddingVertical, resources.getDimension(R.dimen.defaultVerticalPadding))
 
         } finally {
             typedArray.recycle()
@@ -184,8 +183,6 @@ class BlurBehindLayout : FrameLayout {
     private fun addOnScrollListener() {
         viewTreeObserver.addOnScrollChangedListener(onScrollChangesListener)
     }
-
-    private val onScrollChangesListener = ViewTreeObserver.OnScrollChangedListener { updateForMilliSeconds(200) }
 
     private fun createGLSurfaceView(context: Context) {
         val openGLRenderer = GLSurfaceViewRenderer()
@@ -233,7 +230,7 @@ class BlurBehindLayout : FrameLayout {
     }
 
     private var frameCallBack = Choreographer.FrameCallback {
-        redrawBlurTexture() 
+        redrawBlurTexture()
     }
 
     private fun renderBehindViewToTexture() {
@@ -242,10 +239,10 @@ class BlurBehindLayout : FrameLayout {
         val glCanvas = commonRenderer.behindViewSurfaceTexture.beginDraw()
 
         glCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-        viewBehind?.getHitRect(viewBehindRect)
-        getHitRect(thisViewRect)
+        viewBehind?.getLocationInWindow(viewBehindPosition)
+        getLocationInWindow(thisViewPosition)
         glCanvas?.scale(commonRenderer.scale, commonRenderer.scale)
-        glCanvas?.translate((viewBehindRect.left - thisViewRect.left).toFloat(), (viewBehindRect.top - thisViewRect.top + paddingVertical * 0.5f))
+        glCanvas?.translate((viewBehindPosition[0] - thisViewPosition[0]).toFloat(), (viewBehindPosition[1] - thisViewPosition[1] + paddingVertical * 0.5f))
 
         viewBehind?.draw(glCanvas)
 
@@ -308,7 +305,7 @@ class BlurBehindLayout : FrameLayout {
         }
     }
 
-    fun recursiveLoopChildren(parent: ViewGroup) {
+    private fun recursiveLoopChildren(parent: ViewGroup) {
         for (i in 0 until parent.childCount) {
             val child = parent.getChildAt(i)
             if (child == this)

@@ -12,7 +12,7 @@ import no.danielzeller.blurbehindlib.*
 import no.danielzeller.blurbehindlib.opengl.*
 
 
-class CommonRenderer(private val context: Context, internal val scale: Float, var useChildAlphaAsMask: Boolean, val paddingVertical: Float) {
+class CommonRenderer(private val context: Context, internal val scale: Float, var useChildAlphaAsMask: Boolean, private val paddingVertical: Float) {
 
     var behindViewSurfaceTexture = ViewSurfaceTexture()
     var childViewSurfaceTexture = ViewSurfaceTexture()

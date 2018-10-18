@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
         var exitApp = true
         var fragment = supportFragmentManager.findFragmentByTag(DIALOG_FRAGMENT_TAG)
         if (fragment != null) {
-            (fragment as DialogFragment).exitAnimateAndRmove()
+            (fragment as DialogFragment).exitAnimateAndRemove()
             exitApp = false
         }
 

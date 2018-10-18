@@ -37,7 +37,7 @@ class DialogFragment : Fragment(), View.OnTouchListener {
     }
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        exitAnimateAndRmove()
+        exitAnimateAndRemove()
         return false
     }
 
@@ -58,11 +58,11 @@ class DialogFragment : Fragment(), View.OnTouchListener {
 
     private fun setupBlurView(rootView: View) {
         blurView = rootView.dialogBlurView
-        blurView.viewBehind = activity?.findViewById<View>(R.id.viewToBlur)
+        blurView.viewBehind = activity?.findViewById(R.id.viewToBlur)
         blurView.alpha = 0f
     }
 
-    fun exitAnimateAndRmove() {
+    fun exitAnimateAndRemove() {
         if (!isExitAnimating) {
             isExitAnimating = true
             blurView.updateForMilliSeconds(ANIM_DURATION)
@@ -77,7 +77,6 @@ class DialogFragment : Fragment(), View.OnTouchListener {
 
         var easedScale = (blurViewContent.scaleX - SCALED_DOWN_SIZE) * 200f
         var easedScaleOffset = 0f
-        var disableFlipAnimation = false
         frameRateCounter.timeStep()
         blurViewContent.pivotY = blurViewContent.height * pivotY
 
@@ -87,15 +86,14 @@ class DialogFragment : Fragment(), View.OnTouchListener {
                     blurViewContent.scaleX = scale
                     blurViewContent.scaleY = scale
 
-                    if (!disableFlipAnimation) {
-                        //Little trick to give the impression ov some air resistance making the view flip slightly :)
-                        val targetScaleForEasedRotation = (scale - SCALED_DOWN_SIZE) * 200f
-                        val time = frameRateCounter.timeStep()
-                        val easeAmount = ((targetScaleForEasedRotation - easedScale) * time) * 20f
-                        easedScaleOffset += (easeAmount - easedScaleOffset) * time * 30f
-                        blurViewContent.rotationX = easedScaleOffset * rotateAmount
-                        easedScale += easeAmount
-                    }
+                    //Little trick to give the impression ov some air resistance making the view flip slightly :)
+                    val targetScaleForEasedRotation = (scale - SCALED_DOWN_SIZE) * 200f
+                    val time = frameRateCounter.timeStep()
+                    val easeAmount = ((targetScaleForEasedRotation - easedScale) * time) * 20f
+                    easedScaleOffset += (easeAmount - easedScaleOffset) * time * 30f
+                    blurViewContent.rotationX = easedScaleOffset * rotateAmount
+                    easedScale += easeAmount
+
 
                 }.start()
     }

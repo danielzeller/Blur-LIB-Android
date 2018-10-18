@@ -1,6 +1,5 @@
 package no.danielzeller.blurbehindlib.renderers
 
-import android.opengl.GLES20
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView.Renderer
 import javax.microedition.khronos.egl.EGLConfig

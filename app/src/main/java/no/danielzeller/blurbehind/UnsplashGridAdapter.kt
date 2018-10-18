@@ -19,7 +19,7 @@ import java.lang.Exception
 import java.lang.ref.WeakReference
 
 
-class UnsplashGridAdapter(val items: List<UnsplashItem>, private val viewModel: UnsplashViewModel, val clickUnits: List<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class UnsplashGridAdapter(val items: List<UnsplashItem>, private val viewModel: UnsplashViewModel, private val clickUnits: List<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -40,7 +40,7 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, private val viewModel: 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
-        var viewHolder = holder as TextOnlyViewHolder
+        val viewHolder = holder as TextOnlyViewHolder
 
         viewHolder.subHeading.text = item.subHeading
         viewHolder.heading.text = item.heading
@@ -86,7 +86,7 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, private val viewModel: 
         viewHolder.setUpForTextAnim()
 
         val viewHolderRef = WeakReference<CardViewHolder>(viewHolder)
-        viewModel.picasso.load("https://cdn.dribbble.com/users/655449/screenshots/4006191/drib.png").config(Bitmap.Config.HARDWARE).into(viewHolder.image, createOnImageLoadFinishedCallback(viewHolderRef))
+        viewModel.picasso.load(item.imageUrl).config(Bitmap.Config.HARDWARE).into(viewHolder.image, createOnImageLoadFinishedCallback(viewHolderRef))
     }
 
     private fun createOnImageLoadFinishedCallback(viewHolderRef: WeakReference<CardViewHolder>): Callback {
@@ -97,7 +97,7 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, private val viewModel: 
 
                     viewHolder.image.introAnimate()
 
-                    var translateText = ValueAnimator.ofFloat(viewHolder.image.width.toFloat() / 3f, 0f).setDuration(CLIP_ANIM_DURATION).interpolate(scaleProgressBarInterpolator).onUpdate { value ->
+                    val translateText = ValueAnimator.ofFloat(viewHolder.image.width.toFloat() / 3f, 0f).setDuration(CLIP_ANIM_DURATION).interpolate(scaleProgressBarInterpolator).onUpdate { value ->
                         viewHolder.heading.translationY = value as Float
                         viewHolder.subHeading.translationY = value
                     }
@@ -111,11 +111,10 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, private val viewModel: 
     }
 
     open inner class TextOnlyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val heading: TextView
+        val heading: TextView = view.heading
         val subHeading: TextView
 
         init {
-            heading = view.heading
             subHeading = view.subHeading
         }
     }
@@ -132,11 +131,8 @@ class UnsplashGridAdapter(val items: List<UnsplashItem>, private val viewModel: 
             subHeading.translationY = 10000f
         }
 
-        val image: LoaderImageView
+        val image: LoaderImageView = view.image
         var translateTextAnim: ValueAnimator? = null
 
-        init {
-            image = view.image
-        }
     }
 }

@@ -48,23 +48,24 @@ class LoaderImageView(context: Context?, attrs: AttributeSet?) : AppCompatImageV
     private val pathPosition = floatArrayOf(0f, 0f)
 
     init {
-        paint.setAntiAlias(true)
+        paint.isAntiAlias = true
         color1 = resources.getColor(R.color.progressColor1, null)
         color2 = resources.getColor(R.color.progressColor2, null)
         color3 = resources.getColor(R.color.progressColor3, null)
-        paint.setStrokeWidth(resources.getDimension(R.dimen.progressCircleStrokeWidth))
+        paint.strokeWidth = resources.getDimension(R.dimen.progressCircleStrokeWidth)
         dotSize = resources.getDimension(R.dimen.progressDotRadius)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-
-        circlePath1.addCircle(width / 2f, height / 2f, resources.getDimension(R.dimen.progressCircleRadius1), Path.Direction.CW)
-        circlePath2.addCircle(width / 2f, height / 2f, resources.getDimension(R.dimen.progressCircleRadius2), Path.Direction.CW)
-        circlePath3.addCircle(width / 2f, height / 2f, resources.getDimension(R.dimen.progressCircleRadius3), Path.Direction.CW)
-        pm1 = PathMeasure(circlePath1, true)
-        pm2 = PathMeasure(circlePath2, true)
-        pm3 = PathMeasure(circlePath3, true)
+        if (pm1 == null) {
+            circlePath1.addCircle(width / 2f, height / 2f, resources.getDimension(R.dimen.progressCircleRadius1), Path.Direction.CW)
+            circlePath2.addCircle(width / 2f, height / 2f, resources.getDimension(R.dimen.progressCircleRadius2), Path.Direction.CW)
+            circlePath3.addCircle(width / 2f, height / 2f, resources.getDimension(R.dimen.progressCircleRadius3), Path.Direction.CW)
+            pm1 = PathMeasure(circlePath1, true)
+            pm2 = PathMeasure(circlePath2, true)
+            pm3 = PathMeasure(circlePath3, true)
+        }
     }
 
     fun introAnimate() {
@@ -125,10 +126,10 @@ class LoaderImageView(context: Context?, attrs: AttributeSet?) : AppCompatImageV
     }
 
     private fun drawPath(canvas: Canvas, path: Path, color: Int, rotationAmount: Float, pm: PathMeasure) {
-        paint.setStyle(Paint.Style.STROKE)
+        paint.style = Paint.Style.STROKE
         paint.color = color
         canvas.drawPath(path, paint)
-        paint.setStyle(Paint.Style.FILL)
+        paint.style = Paint.Style.FILL
 
         pm.getPosTan(pm.length * (rotationAmount % 1f), pathPosition, null)
         canvas.drawCircle(pathPosition[0], pathPosition[1], dotSize, paint)

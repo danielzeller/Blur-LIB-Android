@@ -46,7 +46,7 @@ class TextureViewRenderer(val context: Context) : TextureView.SurfaceTextureList
 
         var update = true
 
-        fun initGL() {
+        private fun initGL() {
             egl = EGLContext.getEGL() as EGL10
             eglDisplay = egl?.eglGetDisplay(EGL_DEFAULT_DISPLAY)
             egl?.eglInitialize(eglDisplay, intArrayOf(0, 0))
@@ -84,7 +84,7 @@ class TextureViewRenderer(val context: Context) : TextureView.SurfaceTextureList
             destroyResources()
         }
 
-        fun destroyResources() {
+        private fun destroyResources() {
             surface.release()
             commonRenderer.behindViewSurfaceTexture.releaseSurface()
             egl?.eglDestroyContext(eglDisplay, eglContext)

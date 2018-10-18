@@ -1,9 +1,8 @@
 package no.danielzeller.blurbehindlib.opengl
 
 import android.content.Context
-import android.opengl.GLES11Ext
-import android.opengl.GLES20.*
-import android.opengl.GLES30
+import android.opengl.GLES20.glGetAttribLocation
+import android.opengl.GLES20.glGetUniformLocation
 
 class TextureShaderProgram(vertexShaderResourceId: Int, fragmentShaderResourceId: Int) : ShaderProgram(vertexShaderResourceId, fragmentShaderResourceId) {
 
