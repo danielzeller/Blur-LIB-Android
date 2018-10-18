@@ -12,7 +12,7 @@
         <item>Merkeler has a new hobby</item>
         <item>Show dialog</item>
 
-        <item>Stump says geese are no longer wanted in the U.S</item>
+        <item>Stump says geese are no longer welcome in the U.S</item>
         <item>Denmark is building a canal</item>
         <item>New York needs coffee</item>
         <item>Google is selling Android</item>
@@ -65,9 +65,9 @@
     </string-array>
     <string-array name="image_search_term">
         <item>hair</item>
-        <item>germany,flag</item>
+        <item>exit</item>
         <item>heading</item>
-        <item>drone</item>
+        <item>drone,flying</item>
         <item> </item>
         <item>geese</item>
         <item>canal</item>
