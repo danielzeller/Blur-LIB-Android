@@ -37,12 +37,12 @@
         android:id="@+id/appBarBlurLayout"
         android:layout_width="0dp"
         android:layout_height="@dimen/top_bar_height"
+        app:blurRadius="100.0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:updateMode="onScroll"
-        app:useTextureView="false"
-        app:blurRadius = "10.0">
+        app:useTextureView="false">
 
         <View
             android:id="@+id/appBarDimmer"
@@ -75,12 +75,12 @@
         android:id="@+id/navigationBarBlurLayout"
         android:layout_width="0dp"
         android:layout_height="@dimen/navigation_bar_height"
+        app:blurRadius="100.0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:updateMode="onScroll"
-        app:useTextureView="false"
-        app:blurRadius = "100.0">
+        app:useTextureView="false">
 
         <View
             android:id="@+id/navigationBarFullDimmer"
