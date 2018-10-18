@@ -58,14 +58,19 @@ class LoaderImageView(context: Context?, attrs: AttributeSet?) : AppCompatImageV
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        if (pm1 == null) {
-            circlePath1.addCircle(width / 2f, height / 2f, resources.getDimension(R.dimen.progressCircleRadius1), Path.Direction.CW)
-            circlePath2.addCircle(width / 2f, height / 2f, resources.getDimension(R.dimen.progressCircleRadius2), Path.Direction.CW)
-            circlePath3.addCircle(width / 2f, height / 2f, resources.getDimension(R.dimen.progressCircleRadius3), Path.Direction.CW)
-            pm1 = PathMeasure(circlePath1, true)
-            pm2 = PathMeasure(circlePath2, true)
-            pm3 = PathMeasure(circlePath3, true)
-        }
+        buildCirclePaths()
+    }
+
+    private fun buildCirclePaths() {
+        circlePath1.reset()
+        circlePath2.reset()
+        circlePath3.reset()
+        circlePath1.addCircle(width / 2f, height / 2f, resources.getDimension(R.dimen.progressCircleRadius1), Path.Direction.CW)
+        circlePath2.addCircle(width / 2f, height / 2f, resources.getDimension(R.dimen.progressCircleRadius2), Path.Direction.CW)
+        circlePath3.addCircle(width / 2f, height / 2f, resources.getDimension(R.dimen.progressCircleRadius3), Path.Direction.CW)
+        pm1 = PathMeasure(circlePath1, true)
+        pm2 = PathMeasure(circlePath2, true)
+        pm3 = PathMeasure(circlePath3, true)
     }
 
     fun introAnimate() {
@@ -82,7 +87,6 @@ class LoaderImageView(context: Context?, attrs: AttributeSet?) : AppCompatImageV
         canvas.scale(scale, scale, (width / 2).toFloat(), (height / 2).toFloat())
         super.onDraw(canvas)
         canvas.restoreToCount(count)
-
 
         drawLoader(canvas)
     }
