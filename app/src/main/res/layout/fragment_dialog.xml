@@ -8,10 +8,9 @@
 
     <no.danielzeller.blurbehindlib.BlurBehindLayout
         android:id="@+id/dialogBlurView"
-        android:layout_width="310dp"
-        android:layout_height="260dp"
+        android:layout_width="380dp"
+        android:layout_height="320dp"
         android:clipToPadding="false"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,21 +18,21 @@
 
         app:updateMode="manually"
         app:blurPaddingVertical="0.0"
-        app:blurRadius="170.0"
+        app:blurRadius="10.0"
         app:blurTextureScale="0.25"
         app:useChildAlphaAsMask="true"
         app:useTextureView="true" >
 
         <LinearLayout
             android:id="@+id/blurViewFirstChild"
+            android:layout_margin="32dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_corners_drawable"
             android:layerType="hardware"
             android:padding="32dp"
             android:orientation="vertical"
-            android:layout_gravity="center"
-            android:elevation="50dp">
+            android:layout_gravity="center">
 
 
             <TextView

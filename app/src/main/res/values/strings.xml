@@ -57,11 +57,27 @@
         <item>The Android developers have been heard. Google is selling Android. In a public press statement, the head of Android engineering Sundae Pistachio says that the developers on the Android team are sick of the old and boring Android code. It\'s just so much work having to deal with all that legacy code. The engineers would rather work on new projects than having to spend countless hours bug fixing issues related to software rendering.\n\nFull story: <a href="https://danielzeller.no">danielzeller.no</a></item>
         <item> </item>
 
-        <item>No comment needed.Read more: <a href="https://danielzeller.no">danielzeller.no</a></item>
+        <item>No comment needed.\n\nRead more: <a href="https://danielzeller.no">danielzeller.no</a></item>
         <item>After being accused of not being a heading, the heading made a public headline stating that it was indeed a heading.\n\nRead more at: <a href="https://danielzeller.no">danielzeller.no</a></item>
         <item>This was also a heading.\n\nFull story: <a href="https://danielzeller.no">danielzeller.no</a></item>
         <item>Mhmmm. In publishing and graphic design, lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking). Replacing the actual content with placeholder text allows designers to design the form of the content before the content itself has been produced.\n\nFull story at: <a href="https://danielzeller.no">danielzeller.no</a></item>
         <item> </item>
     </string-array>
-
+    <string-array name="image_search_term">
+        <item>hair</item>
+        <item>germany,flag</item>
+        <item>heading</item>
+        <item>drone</item>
+        <item> </item>
+        <item>geese</item>
+        <item>canal</item>
+        <item>coffee</item>
+        <item>iphone,desk,mobile</item>
+        <item> </item>
+        <item>reputation</item>
+        <item>headline,news</item>
+        <item>heading,news</item>
+        <item>news,headline</item>
+        <item> </item>
+    </string-array>
 </resources>

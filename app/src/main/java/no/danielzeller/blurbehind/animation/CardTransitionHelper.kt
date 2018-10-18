@@ -139,6 +139,8 @@ class CardTransitionHelper(private val cardRootView: ConstraintLayout, private v
         navBarDimmer?.visibility = View.VISIBLE
         val appBarBlur = activity?.findViewById<BlurBehindLayout>(R.id.appBarBlurLayout)
         val navBarBlur = activity?.findViewById<BlurBehindLayout>(R.id.navigationBarBlurLayout)
+        appBarBlur?.updateForMilliSeconds(MOVE_DURATION)
+        navBarBlur?.updateForMilliSeconds(MOVE_DURATION)
 
         ObjectAnimator.ofFloat(appBarDimmer, View.ALPHA, 0f, 1f).setDuration(MOVE_DURATION).start(runningAnimations)
         ObjectAnimator.ofFloat(navBarDimmer, View.ALPHA, 0f, 1f).setDuration(MOVE_DURATION).onEnd {

@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#000000</color>
     <color name="colorPrimaryDark">@color/dark_grey</color>
-    <color name="colorAccent">#8dd3ce</color>
+    <color name="colorAccent">@color/progressColor3</color>
 
     <color name="dark_grey">#1A1E1F</color>
     <color name="white">#FFFFFF</color>
 
-
-    <color name="progressColor1">#eebe3e</color>
+    <color name="progressColor1">#fec31e</color>
     <color name="progressColor2">#ee7966</color>
     <color name="progressColor3">#8dd3ce</color>
-
 </resources>

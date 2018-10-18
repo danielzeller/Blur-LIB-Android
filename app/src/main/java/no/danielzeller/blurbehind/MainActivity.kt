@@ -18,7 +18,7 @@ import android.net.Uri
 
 const val DETAILS_FRAGMENT_TAG = "details_fragment_tag"
 const val DIALOG_FRAGMENT_TAG = "dialog_fragment_tag"
-private const val UNSPLASH_RANDOM_URL = "https://source.unsplash.com/random/960x540?"
+private const val UNSPLASH_RANDOM_URL = "https://source.unsplash.com/960x540?"
 private const val CARDS_COUNT = 15
 
 class MainActivity : AppCompatActivity() {
@@ -63,9 +63,11 @@ class MainActivity : AppCompatActivity() {
         val headings = resources.getStringArray(R.array.headings)
         val subHeadings = resources.getStringArray(R.array.sub_headings)
         val articleContent = resources.getStringArray(R.array.articles_content)
+        val searchTerm = resources.getStringArray(R.array.image_search_term)
+
         var cardTypeIndex = 0
         for (i in 0 until CARDS_COUNT) {
-            items.add(UnsplashItem(UNSPLASH_RANDOM_URL + i, headings[i], subHeadings[i], cardsLayouts[cardTypeIndex], articleContent[i], getClickUnit(cardsLayouts[cardTypeIndex])))
+            items.add(UnsplashItem(UNSPLASH_RANDOM_URL + searchTerm[i], headings[i], subHeadings[i], cardsLayouts[cardTypeIndex], articleContent[i], getClickUnit(cardsLayouts[cardTypeIndex])))
 
             cardTypeIndex += 1
             if (cardTypeIndex == cardsLayouts.size) cardTypeIndex = 0

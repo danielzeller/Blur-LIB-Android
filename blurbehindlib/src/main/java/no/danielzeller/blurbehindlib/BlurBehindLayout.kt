@@ -79,7 +79,6 @@ class BlurBehindLayout : FrameLayout {
             checkTextureView()
         }
 
-    private val viewBehindPosition = intArrayOf(0, 0)
     private val thisViewPosition = intArrayOf(0, 0)
     private var useTextureView = false
     private var commonRenderer: CommonRenderer? = null
@@ -239,10 +238,13 @@ class BlurBehindLayout : FrameLayout {
         val glCanvas = commonRenderer.behindViewSurfaceTexture.beginDraw()
 
         glCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-        viewBehind?.getLocationInWindow(viewBehindPosition)
         getLocationInWindow(thisViewPosition)
+
         glCanvas?.scale(commonRenderer.scale, commonRenderer.scale)
-        glCanvas?.translate((viewBehindPosition[0] - thisViewPosition[0]).toFloat(), (viewBehindPosition[1] - thisViewPosition[1] + paddingVertical * 0.5f))
+        glCanvas?.translate(0f, paddingVertical * 0.5f)
+        val behindMatrix = viewBehind?.matrix
+        behindMatrix?.postTranslate(-thisViewPosition[0].toFloat() - paddingLeft, -thisViewPosition[1].toFloat() - paddingTop)
+        glCanvas?.concat(behindMatrix)
 
         viewBehind?.draw(glCanvas)
 
@@ -252,23 +254,24 @@ class BlurBehindLayout : FrameLayout {
     private fun renderChildViewToTexture() {
         if (useChildAlphaAsMask) {
             if (childCount > 1) {
-                val chilView = getChildAt(1)
+                val childView = getChildAt(1)
                 /**
                  * Since the openGL drawing is falling a couple of frames behind the regular UI drawing
                  * we render the child in openGL instead of the regular UI drawcall, so that it is
                  * synced with the openGL drawCommands.
                  */
-                if (chilView.visibility != INVISIBLE) {
-                    chilView.visibility = INVISIBLE
+                if (childView.visibility != INVISIBLE) {
+                    childView.visibility = INVISIBLE
                 }
                 val commonRenderer = commonRenderer!!
                 val glCanvas = commonRenderer.childViewSurfaceTexture.beginDraw()
 
                 glCanvas?.scale(1f, height.toFloat() / (height.toFloat() + paddingVertical))
-                glCanvas?.translate(0f, paddingVertical / 2f)
+                glCanvas?.translate(childView.left.toFloat(), childView.top + paddingVertical * 0.5f)
                 glCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+                glCanvas?.concat(childView.matrix)
+                childView.draw(glCanvas)
 
-                drawChild(glCanvas, chilView, drawingTime)
                 commonRenderer.childViewSurfaceTexture.endDraw(glCanvas)
             }
         }

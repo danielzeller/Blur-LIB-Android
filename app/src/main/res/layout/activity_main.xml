@@ -42,7 +42,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:updateMode="onScroll"
         app:useTextureView="false"
-        app:blurRadius = "100.0">
+        app:blurRadius = "10.0">
 
         <View
             android:id="@+id/appBarDimmer"
