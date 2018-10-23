@@ -58,35 +58,27 @@ When updateMode is UpdateMode.ON_SCROLL, the renderer only renders when a View i
 When updateMode is UpdateMode.MANUALLY, the renderer only renders when the surface is created and when updateForMilliSeconds(..) is called manually. This is useful when animating the background or during a transition. 
 
 #### Use TextureView
-<table>
-  <tr>
-    <td width="50%"><div class="highlight"><pre>app:useTextureView = "true"</pre></div></td> 
-  </tr>
-</table>
+```
+    app:useTextureView = "true"
+```
 This can only be changed in the constructor of the BlurBehindLayout either from xml or using the regular constructor from code. Default value is false. Using TextureView should only be used when SurfaceView is'nt an option, either because the Z-ordering breaks or if you animate the BlurBehindLayout's alpha value. Using TextureView instead of SurfaceView has a small impact on performance.
 
 #### Blur Texture Scale
-<table>
-  <tr>
-    <td width="50%"><div class="highlight"><pre>app:blurTextureScale = "0.5"</pre></div></td> 
-  </tr>
-</table>
+```
+    app:blurTextureScale = "0.5"
+```
 Should be a value between 0.1f-1f. It's recommended to downsample at least to 0.5f. The scale has a big impact on performance, so try keeping it as low as possible. Default is 0.4f. This can only be set in the constructor of the BlurBehindLayout either from xml or using the regular constructor from code. 
 
 #### Padding Vertical 
-<table>
-  <tr>
-    <td width="50%"><div class="highlight"><pre>app:blurPaddingVertical = "50dp"</pre></div></td> 
-  </tr>
-</table>
+```
+    app:blurPaddingVertical = "50dp"
+```
 You can use this to make the Blur Texture larger than the BlurBehindLayout in the vertical direction. For instance when the background View is scrolled up and down it looks better with a padding, because it reduces flicker when new pixels enter the blurred area. 
 
 #### Use Child as alpha mask
-<table>
-  <tr>
-    <td width="50%"><div class="highlight"><pre>app:useChildAlphaAsMask = "true"</pre></div></td> 
-  </tr>
-</table>
+```
+    app:useChildAlphaAsMask = "true"
+```
 When this is true the first child View of the BlurBehindLayout is rendered into a texture. The alpha value of that texture is then used as mask for the Blur texture. When useChildAlphaAsMask is true, useTextureView will be forced to true as well in order to support transparency. 
 This effect can be used for creating text with blurred background and so on. See the DialogFragment for an example. 
 
