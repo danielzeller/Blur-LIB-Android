@@ -44,9 +44,10 @@ Then you need to setup the View that is behind the BlurBehindLayout (the one tha
     <td width="50%"><div class="highlight"><pre>blurBehindLayout.blurRadius = 100.f</pre></div></td>
   </tr>
 </table>
-Determines how stong the blur is. Should be a float value betweenf 0-200f. Default is 40f.
+Determines how strong the blur is. Should be a float value between 0f-200f. Default is 40f.
 
-#### Update Mode
+
+#### Update mode
 <table>
   <tr>
     <td width="50%"><div class="highlight"><pre>app:updateMode = "continuously"</pre></div></td>
@@ -57,30 +58,35 @@ Determines how the BlurBehindLayout is updated. When updateMode is UpdateMode.CO
 When updateMode is UpdateMode.ON_SCROLL, the renderer only renders when a View is Scrolled.
 When updateMode is UpdateMode.MANUALLY, the renderer only renders when the surface is created and when updateForMilliSeconds(..) is called manually. This is useful when animating the background or during a transition. 
 
+
 #### Use TextureView
 ```
     app:useTextureView = "true"
 ```
 This can only be changed in the constructor of the BlurBehindLayout either from xml or using the regular constructor from code. Default value is false. Using TextureView should only be used when SurfaceView is'nt an option, either because the Z-ordering breaks or if you animate the BlurBehindLayout's alpha value. Using TextureView instead of SurfaceView has a small impact on performance.
 
-#### Blur Texture Scale
+
+#### Blur texture scale
 ```
     app:blurTextureScale = "0.5"
 ```
 Should be a value between 0.1f-1f. It's recommended to downsample at least to 0.5f. The scale has a big impact on performance, so try keeping it as low as possible. Default is 0.4f. This can only be set in the constructor of the BlurBehindLayout either from xml or using the regular constructor from code. 
 
-#### Padding Vertical 
+
+#### Padding vertical 
 ```
     app:blurPaddingVertical = "50dp"
 ```
 You can use this to make the Blur Texture larger than the BlurBehindLayout in the vertical direction. For instance when the background View is scrolled up and down it looks better with a padding, because it reduces flicker when new pixels enter the blurred area. 
 
-#### Use Child as alpha mask
+
+#### Use child as alpha mask
 ```
     app:useChildAlphaAsMask = "true"
 ```
 When this is true the first child View of the BlurBehindLayout is rendered into a texture. The alpha value of that texture is then used as mask for the Blur texture. When useChildAlphaAsMask is true, useTextureView will be forced to true as well in order to support transparency. 
 This effect can be used for creating text with blurred background and so on. See the DialogFragment for an example. 
+
 
 
 ## Contact
@@ -90,5 +96,5 @@ You can reach me on Twitter as [@zellah](https://twitter.com/zellah) or [email](
 
 ## Who's behind this?
 
-Developed by [@zellah](https://twitter.com/zellah) at [danielzeller.no](http://danielzeller.no/), a freelance developer situated in Oslo.
+Developed by Daniel Zeller - [danielzeller.no](http://danielzeller.no/), a freelance developer situated in Oslo, Norway.
 
