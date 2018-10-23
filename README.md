@@ -35,6 +35,17 @@ Then you need to setup the View that is behind the BlurBehindLayout (the one tha
      blurBehindLayout.viewBehind = viewToBlur
 ```
 
+#Blur radius
+<table>
+  <tr>
+    <td width="50%"><div class="highlight"><pre>
+ app:blurRadius="100.0" </pre></div></td>
+    <td>
+     blurBehindLayout.blurRadius = 100f
+    </td>
+  </tr>
+</table>
+
 
 ## Contact
 
@@ -45,4 +56,3 @@ You can reach me on Twitter as [@zellah](https://twitter.com/zellah) or [email](
 
 Developed by [@zellah](https://twitter.com/zellah) at [danielzeller.no](http://danielzeller.no/), a freelance developer situated in Oslo.
 
-[<img src="http://static.agens.no/images/agens_logo_w_slogan_avenir_medium.png" width="340" />](http://agens.no/)
