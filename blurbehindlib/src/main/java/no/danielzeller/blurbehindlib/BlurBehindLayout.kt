@@ -91,9 +91,10 @@ class BlurBehindLayout : FrameLayout {
     private var paddingVertical = 0f
     private val onScrollChangesListener = ViewTreeObserver.OnScrollChangedListener { updateForMilliSeconds(200) }
 
-    constructor(context: Context, useTextureView: Boolean, blurTextureScale: Float) : super(context) {
+    constructor(context: Context, useTextureView: Boolean, blurTextureScale: Float, paddingVertical:Float) : super(context) {
         this.blurTextureScale = blurTextureScale
         this.useTextureView = useTextureView
+        this.paddingVertical = paddingVertical
         initView(context)
     }
 
