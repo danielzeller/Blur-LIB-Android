@@ -35,14 +35,14 @@ Then you need to setup the View that is behind the BlurBehindLayout (the one tha
      blurBehindLayout.viewBehind = viewToBlur
 ```
 
-#Blur radius
+#### Blur radius
 <table>
   <tr>
     <td width="50%"><div class="highlight"><pre>
  app:blurRadius="100.0" </pre></div></td>
-    <td>
+    <td><div class="highlight"><pre>
      blurBehindLayout.blurRadius = 100f
-    </td>
+    </pre></div></td>
   </tr>
 </table>
 
