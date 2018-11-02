@@ -10,6 +10,23 @@ A library for Blurring the background of a View.
 The blurring is really fast since everything is fully hardware accelerated. The background View that is to be blurred is rendered into a SurfaceTexture using Surface.lockHardwareCanvas().
 The SurfaceTexture is then blurred using a Guassian blur algorithm and rendered in a SurfaceView or TextureView using OpenGL.
 
+
+## Download
+Via Gradle
+
+```
+   implementation 'no.danielzeller.blurbehindlib:blurbehindlib:1.0.0'
+```
+or Maven
+```
+   <dependency>
+     <groupId>no.danielzeller.blurbehindlib</groupId>
+     <artifactId>blurbehindlib</artifactId>
+     <version>1.0.0</version>
+     <type>pom</type>
+   </dependency>
+```
+
 ## Basics
 Create a BlurBehindLayout from XML
 
