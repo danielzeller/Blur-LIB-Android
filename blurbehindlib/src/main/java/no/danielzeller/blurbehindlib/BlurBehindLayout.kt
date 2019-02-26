@@ -91,7 +91,7 @@ class BlurBehindLayout : FrameLayout {
     private var paddingVertical = 0f
     private val onScrollChangesListener = ViewTreeObserver.OnScrollChangedListener { updateForMilliSeconds(200) }
 
-    constructor(context: Context, useTextureView: Boolean, blurTextureScale: Float, paddingVertical:Float) : super(context) {
+    constructor(context: Context, useTextureView: Boolean, blurTextureScale: Float, paddingVertical: Float) : super(context) {
         this.blurTextureScale = blurTextureScale
         this.useTextureView = useTextureView
         this.paddingVertical = paddingVertical
@@ -158,6 +158,18 @@ class BlurBehindLayout : FrameLayout {
             createTextureView(context)
         } else {
             createGLSurfaceView(context)
+        }
+    }
+
+    override fun setAlpha(alpha: Float) {
+        if (useChildAlphaAsMask) {
+            /**
+             * There is a bug in Android, that renders black background when alpha i 1f,
+             * this horrible hack fixes that.
+             */
+            super.setAlpha(Math.min(alpha, 0.99f))
+        } else {
+            super.setAlpha(alpha)
         }
     }
 
