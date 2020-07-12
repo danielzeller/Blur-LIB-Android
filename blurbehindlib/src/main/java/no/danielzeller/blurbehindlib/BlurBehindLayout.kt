@@ -336,7 +336,7 @@ class BlurBehindLayout : FrameLayout {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         renderView.layoutParams = LayoutParams(0, 0);
-        renderView.layoutParams = LayoutParams(measuredWidth, measuredHeight)
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        renderView.measure(widthMeasureSpec, heightMeasureSpec);
     }
 }
