@@ -206,7 +206,7 @@ class BlurBehindLayout : FrameLayout {
         glSurfaceView.setRenderer(openGLRenderer)
         glSurfaceView.renderMode = RENDERMODE_WHEN_DIRTY
 
-        addView(glSurfaceView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+        addView(glSurfaceView)
         openGLRenderer.commonRenderer = commonRenderer!!
 
         renderView = glSurfaceView
@@ -218,7 +218,7 @@ class BlurBehindLayout : FrameLayout {
         val textureView = TextureView(context)
         textureView.surfaceTextureListener = textureViewRenderer
 
-        addView(textureView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+        addView(textureView)
         textureViewRenderer.commonRenderer = commonRenderer!!
         renderView = textureView
     }
@@ -332,5 +332,11 @@ class BlurBehindLayout : FrameLayout {
                 recursiveLoopChildren(child)
             }
         }
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        renderView.layoutParams = LayoutParams(0, 0);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        renderView.measure(widthMeasureSpec, heightMeasureSpec);
     }
 }
