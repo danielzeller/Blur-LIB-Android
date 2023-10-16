@@ -240,6 +240,8 @@ class BlurBehindLayout : FrameLayout {
         } else {
             (renderView as GLSurfaceView).requestRender()
         }
+
+        viewBehind?.requestLayout()
     }
 
     private var frameCallBack = Choreographer.FrameCallback {
