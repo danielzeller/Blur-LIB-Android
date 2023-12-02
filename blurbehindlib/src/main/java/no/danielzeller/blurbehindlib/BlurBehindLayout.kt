@@ -151,7 +151,7 @@ class BlurBehindLayout : FrameLayout {
         }
     }
 
-    private fun initView(context: Context) {
+    fun initView(context: Context) {
         commonRenderer = CommonRenderer(context, blurTextureScale, useChildAlphaAsMask, paddingVertical)
         commonRenderer!!.blurRadius = blurRadius
         if (useTextureView) {
