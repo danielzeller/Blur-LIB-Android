@@ -90,6 +90,7 @@ class BlurBehindLayout : FrameLayout {
     private var isBlurDisabled = false
     private var paddingVertical = 0f
     private val onScrollChangesListener = ViewTreeObserver.OnScrollChangedListener { updateForMilliSeconds(200) }
+    private var isRenderViewReleased = false
 
     constructor(context: Context, useTextureView: Boolean, blurTextureScale: Float, paddingVertical: Float) : super(context) {
         this.blurTextureScale = blurTextureScale
@@ -224,6 +225,10 @@ class BlurBehindLayout : FrameLayout {
     }
 
     private fun redrawBlurTexture() {
+        if (isRenderViewReleased) {
+            initView(context)
+            isRenderViewReleased = false
+        }
         if (commonRenderer!!.isCreated && renderView.visibility == View.VISIBLE) {
             renderBehindViewToTexture()
             renderChildViewToTexture()
@@ -301,6 +306,7 @@ class BlurBehindLayout : FrameLayout {
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+        isRenderViewReleased = true
         Choreographer.getInstance().removeFrameCallback(frameCallBack)
         viewTreeObserver.removeOnScrollChangedListener(onScrollChangesListener)
         commonRenderer?.destroyResources()
